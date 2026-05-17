@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>DISPLAY</title>
 
 <style>
+
 :root{
     --bg:#0f172a;
     --card:#1e293b;
@@ -82,11 +85,10 @@ h1{
     font-size:32px;
 }
 
-/* ==================== CORES DOS TÍTULOS ==================== */
+/* ==================== TÍTULOS ==================== */
 
 .ativo-titulo{
     background:#166534 !important;
-    color:white;
 }
 
 .proximo-titulo{
@@ -96,15 +98,13 @@ h1{
 
 .finalizado-titulo{
     background:#991b1b !important;
-    color:white;
 }
 
-/* ==================== VIAGENS FUTURAS ==================== */
-
-.titulo[style*="background:#1e40af"]{
+.futuro-titulo{
     background:#1e40af !important;
-    color:white;
 }
+
+/* ==================== TABELA ==================== */
 
 table{
     width:100%;
@@ -123,7 +123,7 @@ th, td{
     border-bottom:1px solid var(--border);
 }
 
-/* ==================== LARGURA DAS COLUNAS ==================== */
+/* ==================== COLUNAS ==================== */
 
 th:nth-child(1), td:nth-child(1){ width:8%; }
 th:nth-child(2), td:nth-child(2){ width:16%; }
@@ -138,27 +138,46 @@ th:nth-child(7), td:nth-child(7){ width:6%; }
     height:20px;
     cursor:pointer;
 }
+
+button{
+    padding:10px 16px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
 </style>
 </head>
 
 <body>
 
 <div class="topo">
+
     <div id="relogio"></div>
+
     <h1>PAINEL OPERACIONAL</h1>
-    <button onclick="trocarTema()">🌙 / ☀️ Tema</button>
+
+    <button onclick="trocarTema()">
+        🌙 / ☀️ Tema
+    </button>
+
 </div>
 
 <!-- ==================== EM OPERAÇÃO ==================== -->
 
 <div class="container">
+
     <h2 class="titulo ativo-titulo">
-        <span>🚌</span> EM OPERAÇÃO
+        <span>🚌</span>
+        EM OPERAÇÃO
     </h2>
 
     <table>
+
         <thead>
             <tr>
+
                 <th>CARRO</th>
                 <th>MOTORISTA</th>
                 <th>ROTA</th>
@@ -174,23 +193,30 @@ th:nth-child(7), td:nth-child(7){ width:6%; }
                         onclick="selecionarTodosAtivos()"
                     >
                 </th>
+
             </tr>
         </thead>
 
         <tbody id="ativos"></tbody>
+
     </table>
+
 </div>
 
 <!-- ==================== PRÓXIMOS ==================== -->
 
 <div class="container">
+
     <h2 class="titulo proximo-titulo">
-        <span>⏳</span> PRÓXIMOS (30 MIN)
+        <span>⏳</span>
+        PRÓXIMOS (30 MIN)
     </h2>
 
     <table>
+
         <thead>
             <tr>
+
                 <th>CARRO</th>
                 <th>MOTORISTA</th>
                 <th>ROTA</th>
@@ -198,23 +224,30 @@ th:nth-child(7), td:nth-child(7){ width:6%; }
                 <th>CHEGADA</th>
                 <th>DESTINO</th>
                 <th></th>
+
             </tr>
         </thead>
 
         <tbody id="proximos"></tbody>
+
     </table>
+
 </div>
 
 <!-- ==================== FINALIZADOS ==================== -->
 
 <div class="container">
+
     <h2 class="titulo finalizado-titulo">
-        <span>🏁</span> FINALIZADOS
+        <span>🏁</span>
+        FINALIZADOS
     </h2>
 
     <table>
+
         <thead>
             <tr>
+
                 <th>CARRO</th>
                 <th>MOTORISTA</th>
                 <th>ROTA</th>
@@ -222,23 +255,30 @@ th:nth-child(7), td:nth-child(7){ width:6%; }
                 <th>CHEGADA</th>
                 <th>DESTINO</th>
                 <th></th>
+
             </tr>
         </thead>
 
         <tbody id="finalizados"></tbody>
+
     </table>
+
 </div>
 
-<!-- ==================== VIAGENS FUTURAS ==================== -->
+<!-- ==================== FUTURAS ==================== -->
 
 <div class="container">
-    <h2 class="titulo" style="background:#1e40af;">
-        <span>📅</span> VIAGENS FUTURAS
+
+    <h2 class="titulo futuro-titulo">
+        <span>📅</span>
+        VIAGENS FUTURAS
     </h2>
 
     <table>
+
         <thead>
             <tr>
+
                 <th>CARRO</th>
                 <th>MOTORISTA</th>
                 <th>ROTA</th>
@@ -246,11 +286,14 @@ th:nth-child(7), td:nth-child(7){ width:6%; }
                 <th>CHEGADA</th>
                 <th>DESTINO</th>
                 <th></th>
+
             </tr>
         </thead>
 
         <tbody id="futuras"></tbody>
+
     </table>
+
 </div>
 
 <script>
@@ -262,7 +305,7 @@ th:nth-child(7), td:nth-child(7){ width:6%; }
 const API = "https://script.google.com/macros/s/AKfycby44X1coEYnIOeQAzgAIsmG8EZIEQz87XP9LbTVniHV0gg0nI0SeXRKcU4DP6EYJ2I0Aw/exec";
 
 /* =========================================================
-   GUARDA ESTADO DOS CHECKBOX
+   CHECKBOX
 ========================================================= */
 
 let checkedState = new Map();
@@ -284,37 +327,96 @@ setInterval(atualizarRelogio, 1000);
 atualizarRelogio();
 
 /* =========================================================
-   SALVAR CHECKBOX
+   CONVERTER HORA PARA MINUTOS
+========================================================= */
+
+function horaParaMinutos(hora){
+
+    /* =====================================================
+       GOOGLE SHEETS
+       1899-12-30T08:30:00.000Z
+    ===================================================== */
+
+    if(String(hora).includes("T")){
+
+        const data = new Date(hora);
+
+        return (
+            data.getUTCHours() * 60
+        ) + data.getUTCMinutes();
+    }
+
+    /* =====================================================
+       FORMATO NORMAL
+       08:30
+    ===================================================== */
+
+    const [h, m] = String(hora)
+        .substring(0,5)
+        .split(":")
+        .map(Number);
+
+    return (h * 60) + m;
+}
+
+/* =========================================================
+   FORMATAR HORA
+========================================================= */
+
+function formatarHora(hora){
+
+    if(String(hora).includes("T")){
+
+        const data = new Date(hora);
+
+        const h = String(data.getUTCHours())
+            .padStart(2, "0");
+
+        const m = String(data.getUTCMinutes())
+            .padStart(2, "0");
+
+        return `${h}:${m}`;
+    }
+
+    return String(hora).substring(0,5);
+}
+
+/* =========================================================
+   CHECKBOX
 ========================================================= */
 
 function salvarEstadoChecks(){
 
     checkedState.clear();
 
-    document.querySelectorAll('#ativos input[type="checkbox"]')
-    .forEach(checkbox => {
+    document.querySelectorAll(
+        '#ativos input[type="checkbox"]'
+    ).forEach(checkbox => {
 
         if(checkbox.checked){
 
             const carro =
-                checkbox.closest('tr').cells[0].textContent.trim();
+                checkbox.closest('tr')
+                .cells[0]
+                .textContent
+                .trim();
 
             checkedState.set(carro, true);
         }
     });
 }
 
-/* =========================================================
-   RESTAURAR CHECKBOX
-========================================================= */
-
 function restaurarEstadoChecks(){
 
-    document.querySelectorAll('#ativos input[type="checkbox"]')
-    .forEach(checkbox => {
+    document.querySelectorAll(
+        '#ativos input[type="checkbox"]'
+    ).forEach(checkbox => {
 
         const carro =
-            checkbox.closest('tr').cells[0].textContent.trim();
+            checkbox.closest('tr')
+            .cells[0]
+            .textContent
+            .trim();
 
         if(checkedState.has(carro)){
 
@@ -323,56 +425,48 @@ function restaurarEstadoChecks(){
     });
 }
 
-/* =========================================================
-   SELECIONAR TODOS
-========================================================= */
-
 function selecionarTodosAtivos(){
 
     const isChecked =
-        document.getElementById('selectAllAtivos').checked;
+        document.getElementById("selectAllAtivos").checked;
 
-    document.querySelectorAll('#ativos input[type="checkbox"]')
-    .forEach(cb => cb.checked = isChecked);
+    document.querySelectorAll(
+        '#ativos input[type="checkbox"]'
+    ).forEach(cb => {
+
+        cb.checked = isChecked;
+    });
 }
 
 /* =========================================================
-   CONVERTER HORA PARA MINUTOS
-========================================================= */
-
-function horaParaMinutos(hora){
-
-    /* =====================================================
-       EXEMPLO:
-       "09:30"
-    ===================================================== */
-
-    const [h, m] = hora.split(":").map(Number);
-
-    return (h * 60) + m;
-}
-
-/* =========================================================
-   GERAR LINHA
+   CRIAR LINHA
 ========================================================= */
 
 function criarLinha(item, checkbox = false){
 
     return `
         <tr>
+
             <td>${item.CARRO}</td>
+
             <td>${item.MOTORISTA}</td>
+
             <td>${item.ROTA || "—"}</td>
-            <td>${item.SAIDA}</td>
-            <td>${item.CHEGADA}</td>
+
+            <td>${formatarHora(item.SAIDA)}</td>
+
+            <td>${formatarHora(item.CHEGADA)}</td>
+
             <td>${item.DESTINO}</td>
 
             <td>
-                ${checkbox
-                    ? '<input type="checkbox" class="check-ativo">'
+                ${
+                    checkbox
+                    ? '<input type="checkbox">'
                     : ''
                 }
             </td>
+
         </tr>
     `;
 }
@@ -385,15 +479,7 @@ async function carregarDados(){
 
     try{
 
-        /* =================================================
-           SALVA CHECKBOX
-        ================================================= */
-
         salvarEstadoChecks();
-
-        /* =================================================
-           BUSCA DADOS
-        ================================================= */
 
         const response = await fetch(API);
 
@@ -409,16 +495,17 @@ async function carregarDados(){
         document.getElementById("futuras").innerHTML = "";
 
         /* =================================================
-           HORÁRIO ATUAL
+           HORA ATUAL
         ================================================= */
 
         const agora = new Date();
 
         const agoraMinutos =
-            (agora.getHours() * 60) + agora.getMinutes();
+            (agora.getHours() * 60)
+            + agora.getMinutes();
 
         /* =================================================
-           ARRAYS PARA ORDENAÇÃO
+           LISTAS
         ================================================= */
 
         const ativosLista = [];
@@ -427,14 +514,10 @@ async function carregarDados(){
         const futurasLista = [];
 
         /* =================================================
-           PERCORRE TODAS AS VIAGENS
+           PROCESSAR DADOS
         ================================================= */
 
         dados.forEach(item => {
-
-            /* =============================================
-               CONVERTE HORÁRIOS
-            ============================================= */
 
             const minutosSaida =
                 horaParaMinutos(item.SAIDA);
@@ -443,7 +526,7 @@ async function carregarDados(){
                 horaParaMinutos(item.CHEGADA);
 
             /* =============================================
-               FINALIZADO POR 2 HORAS
+               MANTER EM FINALIZADOS POR 2H
             ============================================= */
 
             const limiteFinalizado =
@@ -528,7 +611,7 @@ async function carregarDados(){
         );
 
         /* =================================================
-           RENDERIZA ATIVOS
+           RENDERIZAR
         ================================================= */
 
         ativosLista.forEach(item => {
@@ -537,19 +620,11 @@ async function carregarDados(){
                 criarLinha(item, true);
         });
 
-        /* =================================================
-           RENDERIZA PRÓXIMOS
-        ================================================= */
-
         proximosLista.forEach(item => {
 
             document.getElementById("proximos").innerHTML +=
                 criarLinha(item);
         });
-
-        /* =================================================
-           RENDERIZA FINALIZADOS
-        ================================================= */
 
         finalizadosLista.forEach(item => {
 
@@ -557,25 +632,20 @@ async function carregarDados(){
                 criarLinha(item);
         });
 
-        /* =================================================
-           RENDERIZA FUTURAS
-        ================================================= */
-
         futurasLista.forEach(item => {
 
             document.getElementById("futuras").innerHTML +=
                 criarLinha(item);
         });
 
-        /* =================================================
-           RESTAURA CHECKBOX
-        ================================================= */
-
         restaurarEstadoChecks();
 
     }catch(error){
 
-        console.error("Erro ao carregar dados:", error);
+        console.error(
+            "Erro ao carregar dados:",
+            error
+        );
     }
 }
 
@@ -606,7 +676,7 @@ function trocarTema(){
 }
 
 /* =========================================================
-   CARREGA TEMA SALVO
+   CARREGAR TEMA
 ========================================================= */
 
 if(localStorage.getItem("tema") === "true"){
