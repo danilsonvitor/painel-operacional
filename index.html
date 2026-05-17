@@ -291,13 +291,146 @@ async function carregarDados(){
         document.getElementById("futuras").innerHTML = "";
         document.getElementById("finalizados").innerHTML = "";
 
-        const agora = new Date();
+        /**const agora = new Date();
         const futuras = [];
 
         dados.forEach(item => {
             const dataSaida = new Date(item.SAIDA);
             const dataChegada = new Date(item.CHEGADA);
-            const minutosParaSaida = (dataSaida - agora) / 60000;
+            const minutosParaSaida = (dataSaida - agora) / 60000;**/
+
+/* =========================================================
+   NOVA LÓGICA BASEADA APENAS EM HORÁRIO
+   ========================================================= */
+
+// Hora atual do computador
+const agora = new Date();
+
+// Converte hora atual para minutos
+// Exemplo:
+// 09:30 = 570 minutos
+const agoraMinutos = agora.getHours() * 60 + agora.getMinutes();
+
+// Lista de viagens futuras
+const futuras = [];
+
+/* =========================================================
+   PERCORRE TODAS AS VIAGENS
+   ========================================================= */
+
+dados.forEach(item => {
+
+    /* =====================================================
+       CONVERTE HORÁRIO DE SAÍDA EM MINUTOS
+       ===================================================== */
+
+    // Exemplo:
+    // "09:00"
+    const [saidaHora, saidaMin] = item.SAIDA.split(":").map(Number);
+
+    // Total em minutos
+    const minutosSaida = (saidaHora * 60) + saidaMin;
+
+    /* =====================================================
+       CONVERTE HORÁRIO DE CHEGADA EM MINUTOS
+       ===================================================== */
+
+    const [chegadaHora, chegadaMin] = item.CHEGADA.split(":").map(Number);
+
+    const minutosChegada = (chegadaHora * 60) + chegadaMin;
+
+    /* =====================================================
+       TEMPO APÓS FINALIZAÇÃO
+       ===================================================== */
+
+    // Mantém em FINALIZADOS por 2 horas
+    const limiteFinalizado = minutosChegada + 120;
+
+    /* =====================================================
+       DEFINIÇÃO DA ROTA
+       ===================================================== */
+
+    const rota = item.ROTA ? item.ROTA : "—";
+
+    /* =====================================================
+       EM OPERAÇÃO
+       ===================================================== */
+
+    // Se horário atual estiver entre saída e chegada
+    if (agoraMinutos >= minutosSaida &&
+        agoraMinutos <= minutosChegada) {
+
+        const linha = `
+            <tr>
+                <td>${item.CARRO}</td>
+                <td>${item.MOTORISTA}</td>
+                <td>${rota}</td>
+                <td>${item.SAIDA}</td>
+                <td>${item.CHEGADA}</td>
+                <td>${item.DESTINO}</td>
+                <td><input type="checkbox" class="check-ativo"></td>
+            </tr>`;
+
+        document.getElementById("ativos").innerHTML += linha;
+    }
+
+    /* =====================================================
+       FINALIZADOS
+       ===================================================== */
+
+    // Após chegar, permanece 2 horas em FINALIZADOS
+    else if (agoraMinutos > minutosChegada &&
+             agoraMinutos <= limiteFinalizado) {
+
+        const linha = `
+            <tr>
+                <td>${item.CARRO}</td>
+                <td>${item.MOTORISTA}</td>
+                <td>${rota}</td>
+                <td>${item.SAIDA}</td>
+                <td>${item.CHEGADA}</td>
+                <td>${item.DESTINO}</td>
+            </tr>`;
+
+        document.getElementById("finalizados").innerHTML += linha;
+    }
+
+    /* =====================================================
+       PRÓXIMOS
+       ===================================================== */
+
+    // Próximos 30 minutos
+    else if (
+        minutosSaida > agoraMinutos &&
+        minutosSaida <= agoraMinutos + 30
+    ) {
+
+        const linha = `
+            <tr>
+                <td>${item.CARRO}</td>
+                <td>${item.MOTORISTA}</td>
+                <td>${rota}</td>
+                <td>${item.SAIDA}</td>
+                <td>${item.CHEGADA}</td>
+                <td>${item.DESTINO}</td>
+            </tr>`;
+
+        document.getElementById("proximos").innerHTML += linha;
+    }
+
+    /* =====================================================
+       VIAGENS FUTURAS
+       ===================================================== */
+
+    else {
+
+        futuras.push({
+            ...item,
+            minutosSaida
+        });
+    }
+});
+        
             const rota = item.ROTA ? item.ROTA : "—";
 
             if (agora >= dataSaida && agora <= dataChegada) {
