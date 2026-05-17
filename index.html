@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DISPLAY</title>
+
 <style>
 :root{
     --bg:#0f172a;
@@ -12,6 +13,7 @@
     --header:#334155;
     --border:#475569;
 }
+
 .light{
     --bg:#f1f5f9;
     --card:#ffffff;
@@ -19,39 +21,45 @@
     --header:#cbd5e1;
     --border:#94a3b8;
 }
+
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
     font-family:Arial, Helvetica, sans-serif;
 }
+
 body{
     background:var(--bg);
     color:var(--text);
     padding:20px;
     transition:0.3s;
 }
+
 .topo{
     display:flex;
     justify-content:space-between;
     align-items:center;
     margin-bottom:25px;
 }
+
 h1{
     font-size:34px;
     text-align:center;
     flex:1;
 }
+
 #relogio{
     font-size:38px;
     font-weight:bold;
-    font-family: 'Courier New', monospace;
-    letter-spacing: 4px;
+    font-family:'Courier New', monospace;
+    letter-spacing:4px;
     background:rgba(0,0,0,0.4);
     padding:8px 18px;
     border-radius:12px;
     border:2px solid #475569;
 }
+
 .container{
     background:var(--card);
     border-radius:15px;
@@ -59,6 +67,7 @@ h1{
     border:1px solid var(--border);
     margin-bottom:25px;
 }
+
 .titulo{
     display:flex;
     align-items:center;
@@ -68,73 +77,85 @@ h1{
     font-weight:bold;
     color:white;
 }
+
 .titulo span{
     font-size:32px;
 }
 
 /* ==================== CORES DOS TÍTULOS ==================== */
-.ativo-titulo { 
-    background:#166534 !important; 
-    color: white;
-}
-.proximo-titulo { 
-    background:#ca8a04 !important; 
-    color: black;
-}
-.finalizado-titulo { 
-    background:#991b1b !important; 
-    color: white;
+
+.ativo-titulo{
+    background:#166534 !important;
+    color:white;
 }
 
-/* Viagens Futuras */
-.titulo[style*="background:#1e40af"] {
+.proximo-titulo{
+    background:#ca8a04 !important;
+    color:black;
+}
+
+.finalizado-titulo{
+    background:#991b1b !important;
+    color:white;
+}
+
+/* ==================== VIAGENS FUTURAS ==================== */
+
+.titulo[style*="background:#1e40af"]{
     background:#1e40af !important;
-    color: white;
+    color:white;
 }
 
 table{
     width:100%;
     border-collapse:collapse;
-    table-layout: fixed;
+    table-layout:fixed;
     min-width:1150px;
 }
+
 thead{
     background:var(--header);
 }
+
 th, td{
     padding:14px 12px;
     text-align:left;
     border-bottom:1px solid var(--border);
 }
 
-/* Larguras das colunas */
-th:nth-child(1), td:nth-child(1) { width: 8%; }   /* CARRO */
-th:nth-child(2), td:nth-child(2) { width: 16%; }  /* MOTORISTA */
-th:nth-child(3), td:nth-child(3) { width: 18%; }  /* ROTA */
-th:nth-child(4), td:nth-child(4) { width: 12%; }  /* SAÍDA */
-th:nth-child(5), td:nth-child(5) { width: 12%; }  /* CHEGADA */
-th:nth-child(6), td:nth-child(6) { width: 22%; }  /* DESTINO */
-th:nth-child(7), td:nth-child(7) { width: 6%; }   /* CHECKBOX ou vazio */
+/* ==================== LARGURA DAS COLUNAS ==================== */
 
-.check-all {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
+th:nth-child(1), td:nth-child(1){ width:8%; }
+th:nth-child(2), td:nth-child(2){ width:16%; }
+th:nth-child(3), td:nth-child(3){ width:18%; }
+th:nth-child(4), td:nth-child(4){ width:12%; }
+th:nth-child(5), td:nth-child(5){ width:12%; }
+th:nth-child(6), td:nth-child(6){ width:22%; }
+th:nth-child(7), td:nth-child(7){ width:6%; }
+
+.check-all{
+    width:20px;
+    height:20px;
+    cursor:pointer;
 }
 </style>
 </head>
+
 <body>
+
 <div class="topo">
     <div id="relogio"></div>
     <h1>PAINEL OPERACIONAL</h1>
     <button onclick="trocarTema()">🌙 / ☀️ Tema</button>
 </div>
 
-<!-- EM OPERAÇÃO -->
+<!-- ==================== EM OPERAÇÃO ==================== -->
+
 <div class="container">
     <h2 class="titulo ativo-titulo">
         <span>🚌</span> EM OPERAÇÃO
     </h2>
+
     <table>
         <thead>
             <tr>
@@ -144,18 +165,29 @@ th:nth-child(7), td:nth-child(7) { width: 6%; }   /* CHECKBOX ou vazio */
                 <th>SAÍDA</th>
                 <th>CHEGADA</th>
                 <th>DESTINO</th>
-                <th style="width: 6%;"><input type="checkbox" id="selectAllAtivos" class="check-all" onclick="selecionarTodosAtivos()"></th>
+
+                <th>
+                    <input
+                        type="checkbox"
+                        id="selectAllAtivos"
+                        class="check-all"
+                        onclick="selecionarTodosAtivos()"
+                    >
+                </th>
             </tr>
         </thead>
+
         <tbody id="ativos"></tbody>
     </table>
 </div>
 
-<!-- PRÓXIMOS -->
+<!-- ==================== PRÓXIMOS ==================== -->
+
 <div class="container">
     <h2 class="titulo proximo-titulo">
-        <span>⏳</span> PRÓXIMOS (próximos 30 min)
+        <span>⏳</span> PRÓXIMOS (30 MIN)
     </h2>
+
     <table>
         <thead>
             <tr>
@@ -165,18 +197,21 @@ th:nth-child(7), td:nth-child(7) { width: 6%; }   /* CHECKBOX ou vazio */
                 <th>SAÍDA</th>
                 <th>CHEGADA</th>
                 <th>DESTINO</th>
-                <th style="width: 6%;"></th>
+                <th></th>
             </tr>
         </thead>
+
         <tbody id="proximos"></tbody>
     </table>
 </div>
 
-<!-- FINALIZADOS -->
+<!-- ==================== FINALIZADOS ==================== -->
+
 <div class="container">
     <h2 class="titulo finalizado-titulo">
         <span>🏁</span> FINALIZADOS
     </h2>
+
     <table>
         <thead>
             <tr>
@@ -186,18 +221,21 @@ th:nth-child(7), td:nth-child(7) { width: 6%; }   /* CHECKBOX ou vazio */
                 <th>SAÍDA</th>
                 <th>CHEGADA</th>
                 <th>DESTINO</th>
-                <th style="width: 6%;"></th>
+                <th></th>
             </tr>
         </thead>
+
         <tbody id="finalizados"></tbody>
     </table>
 </div>
 
-<!-- VIAGENS FUTURAS -->
+<!-- ==================== VIAGENS FUTURAS ==================== -->
+
 <div class="container">
     <h2 class="titulo" style="background:#1e40af;">
         <span>📅</span> VIAGENS FUTURAS
     </h2>
+
     <table>
         <thead>
             <tr>
@@ -207,175 +245,376 @@ th:nth-child(7), td:nth-child(7) { width: 6%; }   /* CHECKBOX ou vazio */
                 <th>SAÍDA</th>
                 <th>CHEGADA</th>
                 <th>DESTINO</th>
-                <th style="width: 6%;"></th>
+                <th></th>
             </tr>
         </thead>
+
         <tbody id="futuras"></tbody>
     </table>
 </div>
 
-
-
 <script>
+
+/* =========================================================
+   API
+========================================================= */
+
 const API = "https://script.google.com/macros/s/AKfycby44X1coEYnIOeQAzgAIsmG8EZIEQz87XP9LbTVniHV0gg0nI0SeXRKcU4DP6EYJ2I0Aw/exec";
+
+/* =========================================================
+   GUARDA ESTADO DOS CHECKBOX
+========================================================= */
 
 let checkedState = new Map();
 
-// Relógio
+/* =========================================================
+   RELÓGIO
+========================================================= */
+
 function atualizarRelogio(){
+
     const agora = new Date();
-    document.getElementById("relogio").innerHTML = agora.toLocaleTimeString('pt-BR');
+
+    document.getElementById("relogio").innerHTML =
+        agora.toLocaleTimeString('pt-BR');
 }
+
 setInterval(atualizarRelogio, 1000);
+
 atualizarRelogio();
 
-// Formatar Horário
-function formatarHorario(valor) {
-    if (!valor) return "";
-    valor = String(valor).trim();
-    if (valor.includes("T")) {
-        const data = new Date(valor);
-        return data.toLocaleString('pt-BR', {
-            day: '2-digit', month: '2-digit', year: '2-digit',
-            hour: '2-digit', minute: '2-digit'
-        }).replace(',', '');
-    }
-    if (valor.includes(" ")) {
-        const partes = valor.split(" ");
-        let data = partes[0];
-        const hora = partes[1] ? partes[1].substring(0,5) : "";
-        if (data.includes("/")) {
-            const [dia, mes, ano] = data.split("/");
-            data = `${dia}/${mes}/${ano.slice(-2)}`;
-        }
-        return `${data} ${hora}`;
-    }
-    return valor;
-}
+/* =========================================================
+   SALVAR CHECKBOX
+========================================================= */
 
-// Checkbox
-function salvarEstadoChecks() {
+function salvarEstadoChecks(){
+
     checkedState.clear();
-    document.querySelectorAll('#ativos input[type="checkbox"]').forEach(checkbox => {
-        if (checkbox.checked) {
-            const carro = checkbox.closest('tr').cells[0].textContent.trim();
+
+    document.querySelectorAll('#ativos input[type="checkbox"]')
+    .forEach(checkbox => {
+
+        if(checkbox.checked){
+
+            const carro =
+                checkbox.closest('tr').cells[0].textContent.trim();
+
             checkedState.set(carro, true);
         }
     });
 }
 
-function restaurarEstadoChecks() {
-    document.querySelectorAll('#ativos input[type="checkbox"]').forEach(checkbox => {
-        const carro = checkbox.closest('tr').cells[0].textContent.trim();
-        if (checkedState.has(carro)) {
+/* =========================================================
+   RESTAURAR CHECKBOX
+========================================================= */
+
+function restaurarEstadoChecks(){
+
+    document.querySelectorAll('#ativos input[type="checkbox"]')
+    .forEach(checkbox => {
+
+        const carro =
+            checkbox.closest('tr').cells[0].textContent.trim();
+
+        if(checkedState.has(carro)){
+
             checkbox.checked = true;
         }
     });
 }
 
-function selecionarTodosAtivos() {
-    const isChecked = document.getElementById('selectAllAtivos').checked;
-    document.querySelectorAll('#ativos input[type="checkbox"]').forEach(cb => cb.checked = isChecked);
+/* =========================================================
+   SELECIONAR TODOS
+========================================================= */
+
+function selecionarTodosAtivos(){
+
+    const isChecked =
+        document.getElementById('selectAllAtivos').checked;
+
+    document.querySelectorAll('#ativos input[type="checkbox"]')
+    .forEach(cb => cb.checked = isChecked);
 }
 
-// Carregar Dados
+/* =========================================================
+   CONVERTER HORA PARA MINUTOS
+========================================================= */
+
+function horaParaMinutos(hora){
+
+    /* =====================================================
+       EXEMPLO:
+       "09:30"
+    ===================================================== */
+
+    const [h, m] = hora.split(":").map(Number);
+
+    return (h * 60) + m;
+}
+
+/* =========================================================
+   GERAR LINHA
+========================================================= */
+
+function criarLinha(item, checkbox = false){
+
+    return `
+        <tr>
+            <td>${item.CARRO}</td>
+            <td>${item.MOTORISTA}</td>
+            <td>${item.ROTA || "—"}</td>
+            <td>${item.SAIDA}</td>
+            <td>${item.CHEGADA}</td>
+            <td>${item.DESTINO}</td>
+
+            <td>
+                ${checkbox
+                    ? '<input type="checkbox" class="check-ativo">'
+                    : ''
+                }
+            </td>
+        </tr>
+    `;
+}
+
+/* =========================================================
+   CARREGAR DADOS
+========================================================= */
+
 async function carregarDados(){
-    try {
+
+    try{
+
+        /* =================================================
+           SALVA CHECKBOX
+        ================================================= */
+
         salvarEstadoChecks();
 
+        /* =================================================
+           BUSCA DADOS
+        ================================================= */
+
         const response = await fetch(API);
+
         const dados = await response.json();
-        
+
+        /* =================================================
+           LIMPA PAINÉIS
+        ================================================= */
+
         document.getElementById("ativos").innerHTML = "";
         document.getElementById("proximos").innerHTML = "";
-        document.getElementById("futuras").innerHTML = "";
         document.getElementById("finalizados").innerHTML = "";
+        document.getElementById("futuras").innerHTML = "";
+
+        /* =================================================
+           HORÁRIO ATUAL
+        ================================================= */
 
         const agora = new Date();
-        const futuras = [];
+
+        const agoraMinutos =
+            (agora.getHours() * 60) + agora.getMinutes();
+
+        /* =================================================
+           ARRAYS PARA ORDENAÇÃO
+        ================================================= */
+
+        const ativosLista = [];
+        const proximosLista = [];
+        const finalizadosLista = [];
+        const futurasLista = [];
+
+        /* =================================================
+           PERCORRE TODAS AS VIAGENS
+        ================================================= */
 
         dados.forEach(item => {
-            const dataSaida = new Date(item.SAIDA);
-            const dataChegada = new Date(item.CHEGADA);
-            const minutosParaSaida = (dataSaida - agora) / 60000;
-            const rota = item.ROTA ? item.ROTA : "—";
 
-            if (agora >= dataSaida && agora <= dataChegada) {
-                const linha = `
-                    <tr>
-                        <td>${item.CARRO}</td>
-                        <td>${item.MOTORISTA}</td>
-                        <td>${rota}</td>
-                        <td>${formatarHorario(item.SAIDA)}</td>
-                        <td>${formatarHorario(item.CHEGADA)}</td>
-                        <td>${item.DESTINO}</td>
-                        <td><input type="checkbox" class="check-ativo"></td>
-                    </tr>`;
-                document.getElementById("ativos").innerHTML += linha;
+            /* =============================================
+               CONVERTE HORÁRIOS
+            ============================================= */
 
-            } else if (minutosParaSaida > 0 && minutosParaSaida <= 30) {
-                const linha = `
-                    <tr>
-                        <td>${item.CARRO}</td>
-                        <td>${item.MOTORISTA}</td>
-                        <td>${rota}</td>
-                        <td>${formatarHorario(item.SAIDA)}</td>
-                        <td>${formatarHorario(item.CHEGADA)}</td>
-                        <td>${item.DESTINO}</td>
-                    </tr>`;
-                document.getElementById("proximos").innerHTML += linha;
+            const minutosSaida =
+                horaParaMinutos(item.SAIDA);
 
-            } else if (minutosParaSaida > 30) {
-                futuras.push(item);
+            const minutosChegada =
+                horaParaMinutos(item.CHEGADA);
 
-            } else if (agora > dataChegada) {
-                const linha = `
-                    <tr>
-                        <td>${item.CARRO}</td>
-                        <td>${item.MOTORISTA}</td>
-                        <td>${rota}</td>
-                        <td>${formatarHorario(item.SAIDA)}</td>
-                        <td>${formatarHorario(item.CHEGADA)}</td>
-                        <td>${item.DESTINO}</td>
-                    </tr>`;
-                document.getElementById("finalizados").innerHTML += linha;
+            /* =============================================
+               FINALIZADO POR 2 HORAS
+            ============================================= */
+
+            const limiteFinalizado =
+                minutosChegada + 120;
+
+            /* =============================================
+               EM OPERAÇÃO
+            ============================================= */
+
+            if(
+                agoraMinutos >= minutosSaida &&
+                agoraMinutos <= minutosChegada
+            ){
+
+                ativosLista.push({
+                    ...item,
+                    minutosSaida
+                });
+            }
+
+            /* =============================================
+               FINALIZADOS
+            ============================================= */
+
+            else if(
+                agoraMinutos > minutosChegada &&
+                agoraMinutos <= limiteFinalizado
+            ){
+
+                finalizadosLista.push({
+                    ...item,
+                    minutosSaida
+                });
+            }
+
+            /* =============================================
+               PRÓXIMOS 30 MINUTOS
+            ============================================= */
+
+            else if(
+                minutosSaida > agoraMinutos &&
+                minutosSaida <= agoraMinutos + 30
+            ){
+
+                proximosLista.push({
+                    ...item,
+                    minutosSaida
+                });
+            }
+
+            /* =============================================
+               FUTURAS
+            ============================================= */
+
+            else{
+
+                futurasLista.push({
+                    ...item,
+                    minutosSaida
+                });
             }
         });
 
-        // Viagens Futuras ordenadas
-        futuras.sort((a, b) => new Date(a.SAIDA) - new Date(b.SAIDA));
-        futuras.forEach(item => {
-            const rota = item.ROTA ? item.ROTA : "—";
-            const linha = `
-                <tr>
-                    <td>${item.CARRO}</td>
-                    <td>${item.MOTORISTA}</td>
-                    <td>${rota}</td>
-                    <td>${formatarHorario(item.SAIDA)}</td>
-                    <td>${formatarHorario(item.CHEGADA)}</td>
-                    <td>${item.DESTINO}</td>
-                </tr>`;
-            document.getElementById("futuras").innerHTML += linha;
+        /* =================================================
+           ORDENAÇÃO DECRESCENTE
+        ================================================= */
+
+        ativosLista.sort((a,b) =>
+            b.minutosSaida - a.minutosSaida
+        );
+
+        proximosLista.sort((a,b) =>
+            b.minutosSaida - a.minutosSaida
+        );
+
+        finalizadosLista.sort((a,b) =>
+            b.minutosSaida - a.minutosSaida
+        );
+
+        futurasLista.sort((a,b) =>
+            b.minutosSaida - a.minutosSaida
+        );
+
+        /* =================================================
+           RENDERIZA ATIVOS
+        ================================================= */
+
+        ativosLista.forEach(item => {
+
+            document.getElementById("ativos").innerHTML +=
+                criarLinha(item, true);
         });
+
+        /* =================================================
+           RENDERIZA PRÓXIMOS
+        ================================================= */
+
+        proximosLista.forEach(item => {
+
+            document.getElementById("proximos").innerHTML +=
+                criarLinha(item);
+        });
+
+        /* =================================================
+           RENDERIZA FINALIZADOS
+        ================================================= */
+
+        finalizadosLista.forEach(item => {
+
+            document.getElementById("finalizados").innerHTML +=
+                criarLinha(item);
+        });
+
+        /* =================================================
+           RENDERIZA FUTURAS
+        ================================================= */
+
+        futurasLista.forEach(item => {
+
+            document.getElementById("futuras").innerHTML +=
+                criarLinha(item);
+        });
+
+        /* =================================================
+           RESTAURA CHECKBOX
+        ================================================= */
 
         restaurarEstadoChecks();
 
-    } catch (error) {
+    }catch(error){
+
         console.error("Erro ao carregar dados:", error);
     }
 }
 
+/* =========================================================
+   INICIAR
+========================================================= */
+
 carregarDados();
+
+/* =========================================================
+   ATUALIZA A CADA 10 SEGUNDOS
+========================================================= */
+
 setInterval(carregarDados, 10000);
 
-// Tema
+/* =========================================================
+   TEMA
+========================================================= */
+
 function trocarTema(){
+
     document.body.classList.toggle("light");
-    localStorage.setItem("tema", document.body.classList.contains("light"));
+
+    localStorage.setItem(
+        "tema",
+        document.body.classList.contains("light")
+    );
 }
+
+/* =========================================================
+   CARREGA TEMA SALVO
+========================================================= */
+
 if(localStorage.getItem("tema") === "true"){
+
     document.body.classList.add("light");
 }
+
 </script>
+
 </body>
 </html>
