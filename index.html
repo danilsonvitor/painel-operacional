@@ -4,219 +4,204 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>DISPLAY</title>
-
 <style>
-
-:root{
-    --bg:#0f172a;
-    --card:#1e293b;
-    --text:#ffffff;
-    --header:#334155;
-    --border:#475569;
+:root {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #ffffff;
+    --header: #334155;
+    --border: #475569;
+    --hover: rgba(255,255,255,0.05);
 }
 
-.light{
-    --bg:#f1f5f9;
-    --card:#ffffff;
-    --text:#0f172a;
-    --header:#cbd5e1;
-    --border:#94a3b8;
+.light {
+    --bg: #f1f5f9;
+    --card: #ffffff;
+    --text: #0f172a;
+    --header: #cbd5e1;
+    --border: #94a3b8;
+    --hover: rgba(0,0,0,0.05);
 }
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-body{
-    background:var(--bg);
-    color:var(--text);
-    padding:20px;
-    transition:0.3s;
+body {
+    background: var(--bg);
+    color: var(--text);
+    padding: 20px;
+    transition: background 0.3s, color 0.3s;
 }
 
-.topo{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:25px;
+.topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
-h1{
-    font-size:34px;
-    text-align:center;
-    flex:1;
+h1 {
+    font-size: 34px;
+    text-align: center;
+    flex: 1;
+    min-width: 250px;
 }
 
-#relogio{
-    font-size:38px;
-    font-weight:bold;
-    font-family:'Courier New', monospace;
-    letter-spacing:4px;
-    background:rgba(0,0,0,0.4);
-    padding:8px 18px;
-    border-radius:12px;
-    border:2px solid #475569;
+#relogio {
+    font-size: 38px;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 4px;
+    background: rgba(0,0,0,0.4);
+    padding: 8px 18px;
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    white-space: nowrap;
 }
 
-.container{
-    background:var(--card);
-    border-radius:15px;
-    overflow:auto;
-    border:1px solid var(--border);
-    margin-bottom:25px;
+.container {
+    background: var(--card);
+    border-radius: 15px;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    margin-bottom: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.titulo{
-    display:flex;
-    align-items:center;
-    gap:15px;
-    padding:15px 20px;
-    font-size:22px;
-    font-weight:bold;
-    color:white;
+.titulo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #ffffff;
 }
 
-.titulo span{
-    font-size:32px;
+.titulo span {
+    font-size: 32px;
 }
 
-/* ==================== TÍTULOS ==================== */
+.ativo-titulo { background: #166534 !important; }
+.proximo-titulo { background: #ca8a04 !important; color: #000000 !important; }
+.finalizado-titulo { background: #991b1b !important; }
+.futuro-titulo { background: #1e40af !important; }
 
-.ativo-titulo{
-    background:#166534 !important;
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    min-width: 1150px;
 }
 
-.proximo-titulo{
-    background:#ca8a04 !important;
-    color:black;
+thead {
+    background: var(--header);
 }
 
-.finalizado-titulo{
-    background:#991b1b !important;
+th, td {
+    padding: 14px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.futuro-titulo{
-    background:#1e40af !important;
+tbody tr:hover {
+    background: var(--hover);
 }
 
-/* ==================== TABELA ==================== */
+/* Larguras das colunas */
+th:nth-child(1), td:nth-child(1) { width: 14%; }
+th:nth-child(2), td:nth-child(2) { width: 22%; }
+th:nth-child(3), td:nth-child(3) { width: 18%; }
+th:nth-child(4), td:nth-child(4) { width: 12%; }
+th:nth-child(5), td:nth-child(5) { width: 12%; }
+th:nth-child(6), td:nth-child(6) { width: 18%; }
+th:nth-child(7), td:nth-child(7) { width: 4%; text-align: center; }
 
-table{
-    width:100%;
-    border-collapse:collapse;
-    table-layout:fixed;
-    min-width:1150px;
+.check-all {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
 }
 
-thead{
-    background:var(--header);
+button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    background: var(--header);
+    color: var(--text);
+    transition: background 0.2s;
 }
 
-th, td{
-    padding:14px 12px;
-    text-align:left;
-    border-bottom:1px solid var(--border);
+button:hover {
+    filter: brightness(1.1);
 }
 
-/* ==================== COLUNAS ==================== */
-
-th:nth-child(1), td:nth-child(1){ width:8%; }
-th:nth-child(2), td:nth-child(2){ width:16%; }
-th:nth-child(3), td:nth-child(3){ width:18%; }
-th:nth-child(4), td:nth-child(4){ width:12%; }
-th:nth-child(5), td:nth-child(5){ width:12%; }
-th:nth-child(6), td:nth-child(6){ width:22%; }
-th:nth-child(7), td:nth-child(7){ width:6%; }
-
-.check-all{
-    width:20px;
-    height:20px;
-    cursor:pointer;
+.erro {
+    padding: 20px;
+    text-align: center;
+    color: #ef4444;
+    font-weight: bold;
 }
 
-button{
-    padding:10px 16px;
-    border:none;
-    border-radius:10px;
-    cursor:pointer;
-    font-weight:bold;
+.vazio {
+    padding: 20px;
+    text-align: center;
+    color: #94a3b8;
+    font-style: italic;
 }
-
 </style>
 </head>
 
 <body>
-
 <div class="topo">
-
     <div id="relogio"></div>
-
     <h1>PAINEL OPERACIONAL</h1>
-
-    <button onclick="trocarTema()">
-        🌙 / ☀️ Tema
-    </button>
-
+    <button onclick="trocarTema()">🌙 / ☀️ Tema</button>
 </div>
 
-<!-- ==================== EM OPERAÇÃO ==================== -->
-
+<!-- EM OPERAÇÃO -->
 <div class="container">
-
     <h2 class="titulo ativo-titulo">
-        <span>🚌</span>
-        EM OPERAÇÃO
+        <span>🚌</span> EM OPERAÇÃO
     </h2>
-
     <table>
-
         <thead>
             <tr>
-
                 <th>CARRO</th>
                 <th>MOTORISTA</th>
                 <th>ROTA</th>
                 <th>SAÍDA</th>
                 <th>CHEGADA</th>
                 <th>DESTINO</th>
-
                 <th>
-                    <input
-                        type="checkbox"
-                        id="selectAllAtivos"
-                        class="check-all"
-                        onclick="selecionarTodosAtivos()"
-                    >
+                    <input type="checkbox" id="selectAllAtivos" class="check-all" onclick="selecionarTodosAtivos()">
                 </th>
-
             </tr>
         </thead>
-
         <tbody id="ativos"></tbody>
-
     </table>
-
 </div>
 
-<!-- ==================== PRÓXIMOS ==================== -->
-
+<!-- PRÓXIMOS -->
 <div class="container">
-
     <h2 class="titulo proximo-titulo">
-        <span>⏳</span>
-        PRÓXIMOS (30 MIN)
+        <span>⏳</span> PRÓXIMOS (30 MIN)
     </h2>
-
     <table>
-
         <thead>
             <tr>
-
                 <th>CARRO</th>
                 <th>MOTORISTA</th>
                 <th>ROTA</th>
@@ -224,30 +209,20 @@ button{
                 <th>CHEGADA</th>
                 <th>DESTINO</th>
                 <th></th>
-
             </tr>
         </thead>
-
         <tbody id="proximos"></tbody>
-
     </table>
-
 </div>
 
-<!-- ==================== FINALIZADOS ==================== -->
-
+<!-- FINALIZADOS -->
 <div class="container">
-
     <h2 class="titulo finalizado-titulo">
-        <span>🏁</span>
-        FINALIZADOS
+        <span>🏁</span> FINALIZADOS
     </h2>
-
     <table>
-
         <thead>
             <tr>
-
                 <th>CARRO</th>
                 <th>MOTORISTA</th>
                 <th>ROTA</th>
@@ -255,30 +230,20 @@ button{
                 <th>CHEGADA</th>
                 <th>DESTINO</th>
                 <th></th>
-
             </tr>
         </thead>
-
         <tbody id="finalizados"></tbody>
-
     </table>
-
 </div>
 
-<!-- ==================== FUTURAS ==================== -->
-
+<!-- VIAGENS FUTURAS -->
 <div class="container">
-
     <h2 class="titulo futuro-titulo">
-        <span>📅</span>
-        VIAGENS FUTURAS
+        <span>📅</span> VIAGENS FUTURAS
     </h2>
-
     <table>
-
         <thead>
             <tr>
-
                 <th>CARRO</th>
                 <th>MOTORISTA</th>
                 <th>ROTA</th>
@@ -286,405 +251,189 @@ button{
                 <th>CHEGADA</th>
                 <th>DESTINO</th>
                 <th></th>
-
             </tr>
         </thead>
-
         <tbody id="futuras"></tbody>
-
     </table>
-
 </div>
 
 <script>
-
-/* =========================================================
-   API
-========================================================= */
-
+/* ==============================================
+   CONFIGURAÇÕES E API
+============================================== */
 const API = "https://script.google.com/macros/s/AKfycbyt-QoodC39Oc0Ig8lRcfpriBUmqoAkkLiyOZxtTpnSQiL9QycksUzAe40xl0JUQyrgwQ/exec";
-
-/* =========================================================
-   CHECKBOX
-========================================================= */
-
+const TEMPO_EXIBIR_FINALIZADOS = 120; // minutos
+const JANELA_PROXIMOS = 30; // minutos
 let checkedState = new Map();
 
-/* =========================================================
+/* ==============================================
    RELÓGIO
-========================================================= */
-
-function atualizarRelogio(){
-
+============================================== */
+function atualizarRelogio() {
     const agora = new Date();
-
-    document.getElementById("relogio").innerHTML =
-        agora.toLocaleTimeString('pt-BR');
+    document.getElementById("relogio").textContent = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 }
-
 setInterval(atualizarRelogio, 1000);
-
 atualizarRelogio();
 
-/* =========================================================
-   CONVERTER HORA PARA MINUTOS
-========================================================= */
+/* ==============================================
+   CONVERSÃO E FORMATAÇÃO DE HORAS
+============================================== */
+function horaParaMinutos(horaStr) {
+    if (!horaStr || horaStr === "—") return 999999; // valor alto para não classificar
+    if (typeof horaStr === "number") return horaStr;
 
-function horaParaMinutos(hora){
-
-    /* =====================================================
-       GOOGLE SHEETS
-       1899-12-30T08:30:00.000Z
-    ===================================================== */
-
-    if(String(hora).includes("T")){
-
-        const data = new Date(hora);
-
-        return (
-            data.getUTCHours() * 60
-        ) + data.getUTCMinutes();
+    if (horaStr.includes("T")) {
+        const data = new Date(horaStr);
+        return data.getUTCHours() * 60 + data.getUTCMinutes();
     }
 
-    /* =====================================================
-       FORMATO NORMAL
-       08:30
-    ===================================================== */
-
-    const [h, m] = String(hora)
-        .substring(0,5)
-        .split(":")
-        .map(Number);
-
-    return (h * 60) + m;
+    const partes = String(horaStr).substring(0,5).split(":").map(Number);
+    if (partes.length !== 2 || isNaN(partes[0]) || isNaN(partes[1])) return 999999;
+    return partes[0] * 60 + partes[1];
 }
 
-/* =========================================================
-   FORMATAR HORA
-========================================================= */
-
-function formatarHora(hora){
-
-    if(String(hora).includes("T")){
-
-        const data = new Date(hora);
-
-        const h = String(data.getUTCHours())
-            .padStart(2, "0");
-
-        const m = String(data.getUTCMinutes())
-            .padStart(2, "0");
-
+function formatarHora(horaStr) {
+    if (!horaStr || horaStr === "—") return "—";
+    if (horaStr.includes("T")) {
+        const data = new Date(horaStr);
+        const h = String(data.getUTCHours()).padStart(2, "0");
+        const m = String(data.getUTCMinutes()).padStart(2, "0");
         return `${h}:${m}`;
     }
-
-    return String(hora).substring(0,5);
+    return String(horaStr).substring(0,5);
 }
 
-/* =========================================================
-   CHECKBOX
-========================================================= */
-
-function salvarEstadoChecks(){
-
+/* ==============================================
+   CONTROLE DOS CHECKBOXES
+============================================== */
+function salvarEstadoChecks() {
     checkedState.clear();
-
-    document.querySelectorAll(
-        '#ativos input[type="checkbox"]'
-    ).forEach(checkbox => {
-
-        if(checkbox.checked){
-
-            const carro =
-                checkbox.closest('tr')
-                .cells[0]
-                .textContent
-                .trim();
-
+    document.querySelectorAll('#ativos input[type="checkbox"]').forEach(cb => {
+        if (cb.checked) {
+            const carro = cb.closest('tr').cells[0].textContent.trim();
             checkedState.set(carro, true);
         }
     });
 }
 
-function restaurarEstadoChecks(){
-
-    document.querySelectorAll(
-        '#ativos input[type="checkbox"]'
-    ).forEach(checkbox => {
-
-        const carro =
-            checkbox.closest('tr')
-            .cells[0]
-            .textContent
-            .trim();
-
-        if(checkedState.has(carro)){
-
-            checkbox.checked = true;
-        }
+function restaurarEstadoChecks() {
+    document.querySelectorAll('#ativos input[type="checkbox"]').forEach(cb => {
+        const carro = cb.closest('tr').cells[0].textContent.trim();
+        cb.checked = checkedState.has(carro);
     });
 }
 
-function selecionarTodosAtivos(){
-
-    const isChecked =
-        document.getElementById("selectAllAtivos").checked;
-
-    document.querySelectorAll(
-        '#ativos input[type="checkbox"]'
-    ).forEach(cb => {
-
-        cb.checked = isChecked;
-    });
+function selecionarTodosAtivos() {
+    const marcar = document.getElementById("selectAllAtivos").checked;
+    document.querySelectorAll('#ativos input[type="checkbox"]').forEach(cb => cb.checked = marcar);
 }
 
-/* =========================================================
-   CRIAR LINHA
-========================================================= */
-
-function criarLinha(item, checkbox = false){
-
+/* ==============================================
+   CRIAR LINHA DA TABELA
+============================================== */
+function criarLinha(item, temCheckbox = false) {
     return `
         <tr>
-
-            <td>${item.CARRO}</td>
-
-            <td>${item.MOTORISTA}</td>
-
+            <td>${item.CARRO || "—"}</td>
+            <td>${item.MOTORISTA || "—"}</td>
             <td>${item.ROTA || "—"}</td>
-
             <td>${formatarHora(item.SAIDA)}</td>
-
             <td>${formatarHora(item.CHEGADA)}</td>
-
-            <td>${item.DESTINO}</td>
-
-            <td>
-                ${
-                    checkbox
-                    ? '<input type="checkbox">'
-                    : ''
-                }
-            </td>
-
+            <td>${item.DESTINO || "—"}</td>
+            <td>${temCheckbox ? '<input type="checkbox">' : ""}</td>
         </tr>
     `;
 }
 
-/* =========================================================
-   CARREGAR DADOS
-========================================================= */
-
-async function carregarDados(){
-
-    try{
-
+/* ==============================================
+   CARREGAR E PROCESSAR DADOS
+============================================== */
+async function carregarDados() {
+    try {
         salvarEstadoChecks();
+        const resposta = await fetch(API, { cache: "no-store" });
+        if (!resposta.ok) throw new Error(`Erro na requisição: ${resposta.status}`);
+        
+        const dados = await resposta.json();
+        const tbodyAtivos = document.getElementById("ativos");
+        const tbodyProximos = document.getElementById("proximos");
+        const tbodyFinalizados = document.getElementById("finalizados");
+        const tbodyFuturas = document.getElementById("futuras");
 
-        const response = await fetch(API);
-
-        const dados = await response.json();
-
-        /* =================================================
-           LIMPA PAINÉIS
-        ================================================= */
-
-        document.getElementById("ativos").innerHTML = "";
-        document.getElementById("proximos").innerHTML = "";
-        document.getElementById("finalizados").innerHTML = "";
-        document.getElementById("futuras").innerHTML = "";
-
-        /* =================================================
-           HORA ATUAL
-        ================================================= */
+        tbodyAtivos.innerHTML = "";
+        tbodyProximos.innerHTML = "";
+        tbodyFinalizados.innerHTML = "";
+        tbodyFuturas.innerHTML = "";
 
         const agora = new Date();
+        const agoraMinutos = agora.getHours() * 60 + agora.getMinutes();
 
-        const agoraMinutos =
-            (agora.getHours() * 60)
-            + agora.getMinutes();
-
-        /* =================================================
-           LISTAS
-        ================================================= */
-
-        const ativosLista = [];
-        const proximosLista = [];
-        const finalizadosLista = [];
-        const futurasLista = [];
-
-        /* =================================================
-           PROCESSAR DADOS
-        ================================================= */
+        const ativos = [], proximos = [], finalizados = [], futuras = [];
 
         dados.forEach(item => {
+            const minSaida = horaParaMinutos(item.SAIDA);
+            const minChegada = horaParaMinutos(item.CHEGADA);
+            const limiteFinalizado = minChegada + TEMPO_EXIBIR_FINALIZADOS;
 
-            const minutosSaida =
-                horaParaMinutos(item.SAIDA);
-
-            const minutosChegada =
-                horaParaMinutos(item.CHEGADA);
-
-            /* =============================================
-               MANTER EM FINALIZADOS POR 2H
-            ============================================= */
-
-            const limiteFinalizado =
-                minutosChegada + 120;
-
-            /* =============================================
-               EM OPERAÇÃO
-            ============================================= */
-
-            if(
-                agoraMinutos >= minutosSaida &&
-                agoraMinutos <= minutosChegada
-            ){
-
-                ativosLista.push({
-                    ...item,
-                    minutosSaida
-                });
-            }
-
-            /* =============================================
-               FINALIZADOS
-            ============================================= */
-
-            else if(
-                agoraMinutos > minutosChegada &&
-                agoraMinutos <= limiteFinalizado
-            ){
-
-                finalizadosLista.push({
-                    ...item,
-                    minutosSaida
-                });
-            }
-
-            /* =============================================
-               PRÓXIMOS 30 MINUTOS
-            ============================================= */
-
-            else if(
-                minutosSaida > agoraMinutos &&
-                minutosSaida <= agoraMinutos + 30
-            ){
-
-                proximosLista.push({
-                    ...item,
-                    minutosSaida
-                });
-            }
-
-            /* =============================================
-               FUTURAS
-            ============================================= */
-
-            else{
-
-                futurasLista.push({
-                    ...item,
-                    minutosSaida
-                });
+            if (agoraMinutos >= minSaida && agoraMinutos <= minChegada) {
+                ativos.push({ ...item, minSaida });
+            } else if (agoraMinutos > minChegada && agoraMinutos <= limiteFinalizado) {
+                finalizados.push({ ...item, minSaida });
+            } else if (minSaida > agoraMinutos && minSaida <= agoraMinutos + JANELA_PROXIMOS) {
+                proximos.push({ ...item, minSaida });
+            } else if (minSaida > agoraMinutos) {
+                futuras.push({ ...item, minSaida });
             }
         });
 
-        /* =================================================
-           ORDENAÇÃO DECRESCENTE
-        ================================================= */
+        // Ordenar por horário de saída
+        const ordenar = (a, b) => a.minSaida - b.minSaida;
+        ativos.sort(ordenar);
+        proximos.sort(ordenar);
+        finalizados.sort(ordenar);
+        futuras.sort(ordenar);
 
-        ativosLista.sort((a,b) =>
-            b.minutosSaida - a.minutosSaida
-        );
+        // Renderizar
+        ativos.forEach(i => tbodyAtivos.innerHTML += criarLinha(i, true));
+        proximos.forEach(i => tbodyProximos.innerHTML += criarLinha(i));
+        finalizados.forEach(i => tbodyFinalizados.innerHTML += criarLinha(i));
+        futuras.forEach(i => tbodyFuturas.innerHTML += criarLinha(i));
 
-        proximosLista.sort((a,b) =>
-            b.minutosSaida - a.minutosSaida
-        );
-
-        finalizadosLista.sort((a,b) =>
-            b.minutosSaida - a.minutosSaida
-        );
-
-        futurasLista.sort((a,b) =>
-            b.minutosSaida - a.minutosSaida
-        );
-
-        /* =================================================
-           RENDERIZAR
-        ================================================= */
-
-        ativosLista.forEach(item => {
-
-            document.getElementById("ativos").innerHTML +=
-                criarLinha(item, true);
-        });
-
-        proximosLista.forEach(item => {
-
-            document.getElementById("proximos").innerHTML +=
-                criarLinha(item);
-        });
-
-        finalizadosLista.forEach(item => {
-
-            document.getElementById("finalizados").innerHTML +=
-                criarLinha(item);
-        });
-
-        futurasLista.forEach(item => {
-
-            document.getElementById("futuras").innerHTML +=
-                criarLinha(item);
+        // Mensagem quando vazio
+        [tbodyAtivos, tbodyProximos, tbodyFinalizados, tbodyFuturas].forEach(tb => {
+            if (!tb.innerHTML) tb.innerHTML = `<tr><td colspan="7" class="vazio">Nenhuma viagem nesta categoria</td></tr>`;
         });
 
         restaurarEstadoChecks();
 
-    }catch(error){
-
-        console.error(
-            "Erro ao carregar dados:",
-            error
-        );
+    } catch (erro) {
+        console.error("Erro ao carregar dados:", erro);
+        const mensagem = `<tr><td colspan="7" class="erro">Não foi possível carregar os dados. Verifique a conexão.</td></tr>`;
+        document.getElementById("ativos").innerHTML = mensagem;
+        document.getElementById("proximos").innerHTML = mensagem;
+        document.getElementById("finalizados").innerHTML = mensagem;
+        document.getElementById("futuras").innerHTML = mensagem;
     }
 }
 
-/* =========================================================
-   INICIAR
-========================================================= */
-
-carregarDados();
-
-/* =========================================================
-   ATUALIZA A CADA 10 SEGUNDOS
-========================================================= */
-
-setInterval(carregarDados, 10000);
-
-/* =========================================================
-   TEMA
-========================================================= */
-
-function trocarTema(){
-
+/* ==============================================
+   TEMA CLARO/ESCURO
+============================================== */
+function trocarTema() {
     document.body.classList.toggle("light");
-
-    localStorage.setItem(
-        "tema",
-        document.body.classList.contains("light")
-    );
+    localStorage.setItem("tema", document.body.classList.contains("light"));
 }
 
-/* =========================================================
-   CARREGAR TEMA
-========================================================= */
-
-if(localStorage.getItem("tema") === "true"){
-
+if (localStorage.getItem("tema") === "true") {
     document.body.classList.add("light");
 }
 
+/* ==============================================
+   INICIALIZAÇÃO
+============================================== */
+carregarDados();
+setInterval(carregarDados, 10000);
 </script>
-
 </body>
 </html>
