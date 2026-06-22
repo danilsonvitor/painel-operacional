@@ -101,16 +101,6 @@ table {
     min-width: 1150px;
 }
 
-.th-sortable {
-    cursor: pointer;
-    user-select: none;
-}
-
-.sort-icon {
-    margin-left: 8px;
-    font-size: 0.85em;
-}
-
 thead {
     background: var(--header);
 }
@@ -128,7 +118,6 @@ tbody tr:hover {
     background: var(--hover);
 }
 
-/* Larguras das colunas */
 th:nth-child(1), td:nth-child(1) { width: 14%; }
 th:nth-child(2), td:nth-child(2) { width: 22%; }
 th:nth-child(3), td:nth-child(3) { width: 18%; }
@@ -189,7 +178,7 @@ button:hover {
     <table>
         <thead>
             <tr>
-                <th class="th-sortable" onclick="toggleOrdenacaoCarro()">CARRO <span class="sort-icon">▼</span></th>
+                <th>CARRO</th>
                 <th>MOTORISTA</th>
                 <th>ROTA</th>
                 <th>SAÍDA</th>
@@ -212,13 +201,15 @@ button:hover {
     <table>
         <thead>
             <tr>
-                <th class="th-sortable" onclick="toggleOrdenacaoCarro()">CARRO <span class="sort-icon">▼</span></th>
+                <th>CARRO</th>
                 <th>MOTORISTA</th>
                 <th>ROTA</th>
                 <th>SAÍDA</th>
                 <th>CHEGADA</th>
                 <th>DESTINO</th>
-                <th></th>
+                <th>
+                    <input type="checkbox" id="selectAllProximos" class="check-all" onclick="selecionarTodosProximos()">
+                </th>
             </tr>
         </thead>
         <tbody id="proximos"></tbody>
@@ -233,7 +224,7 @@ button:hover {
     <table>
         <thead>
             <tr>
-                <th class="th-sortable" onclick="toggleOrdenacaoCarro()">CARRO <span class="sort-icon">▼</span></th>
+                <th>CARRO</th>
                 <th>MOTORISTA</th>
                 <th>ROTA</th>
                 <th>SAÍDA</th>
@@ -254,7 +245,7 @@ button:hover {
     <table>
         <thead>
             <tr>
-                <th class="th-sortable" onclick="toggleOrdenacaoCarro()">CARRO <span class="sort-icon">▼</span></th>
+                <th>CARRO</th>
                 <th>MOTORISTA</th>
                 <th>ROTA</th>
                 <th>SAÍDA</th>
@@ -274,93 +265,43 @@ button:hover {
 const API = "https://script.google.com/macros/s/AKfycbyt-QoodC39Oc0Ig8lRcfpriBUmqoAkkLiyOZxtTpnSQiL9QycksUzAe40xl0JUQyrgwQ/exec";
 const TEMPO_EXIBIR_FINALIZADOS = 120; // minutos
 const JANELA_PROXIMOS = 30; // minutos
-let checkedState = new Map();
-let dadosCache = [];
-let carroSortDirecao = 'asc';
-let ordenacaoPorCarro = false;
 
-function atualizarIconeOrdenacao() {
-    document.querySelectorAll('.sort-icon').forEach(span => {
-        span.textContent = carroSortDirecao === 'asc' ? '▼' : '▲';
-    });
+let checkedStateAtivos = new Map();
+let checkedStateProximos = new Map();
+let carregando = false;
+
+/* ==============================================
+   UTILITÁRIOS
+============================================== */
+function escapeHtml(valor) {
+    return String(valor ?? "—")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
 }
 
-function compararPorCarro(a, b) {
-    const carroA = String(a.CARRO || '').normalize('NFD');
-    const carroB = String(b.CARRO || '').normalize('NFD');
-    const resultado = carroA.localeCompare(carroB, 'pt-BR', { sensitivity: 'base' });
-    return carroSortDirecao === 'asc' ? resultado : -resultado;
+function gerarChave(item) {
+    return [
+        item.CARRO || "",
+        item.MOTORISTA || "",
+        item.ROTA || "",
+        item.SAIDA || "",
+        item.CHEGADA || "",
+        item.DESTINO || ""
+    ].join("|");
 }
 
-function compararPorSaida(a, b) {
-    return (a.minSaida || 0) - (b.minSaida || 0);
-}
-
-function processarDados(dados) {
-    const tbodyAtivos = document.getElementById("ativos");
-    const tbodyProximos = document.getElementById("proximos");
-    const tbodyFinalizados = document.getElementById("finalizados");
-    const tbodyFuturas = document.getElementById("futuras");
-
-    tbodyAtivos.innerHTML = "";
-    tbodyProximos.innerHTML = "";
-    tbodyFinalizados.innerHTML = "";
-    tbodyFuturas.innerHTML = "";
-
-    const agora = new Date();
-    const agoraMinutos = agora.getHours() * 60 + agora.getMinutes();
-
-    const ativos = [];
-    const proximos = [];
-    const finalizados = [];
-    const futuras = [];
-
-    dados.forEach(item => {
-        const minSaida = horaParaMinutos(item.SAIDA);
-        const minChegada = horaParaMinutos(item.CHEGADA);
-        const limiteFinalizado = minChegada + TEMPO_EXIBIR_FINALIZADOS;
-
-        if (agoraMinutos >= minSaida && agoraMinutos <= minChegada) {
-            ativos.push({ ...item, minSaida });
-        } else if (agoraMinutos > minChegada && agoraMinutos <= limiteFinalizado) {
-            finalizados.push({ ...item, minSaida });
-        } else if (minSaida > agoraMinutos && minSaida <= agoraMinutos + JANELA_PROXIMOS) {
-            proximos.push({ ...item, minSaida });
-        } else if (minSaida > agoraMinutos) {
-            futuras.push({ ...item, minSaida });
-        }
-    });
-
-    if (ordenacaoPorCarro) {
-        ativos.sort(compararPorCarro);
-        proximos.sort(compararPorCarro);
-        finalizados.sort(compararPorCarro);
-        futuras.sort(compararPorCarro);
-    } else {
-        ativos.sort(compararPorSaida);
-        proximos.sort(compararPorSaida);
-        finalizados.sort(compararPorSaida);
-        futuras.sort(compararPorSaida);
-    }
-
-    const preencherTabela = (tbody, itens, temCheckbox = false) => {
-        const html = itens.map(item => criarLinha(item, temCheckbox)).join('');
-        tbody.innerHTML = html || `<tr><td colspan="7" class="vazio">Nenhuma viagem nesta categoria</td></tr>`;
+function normalizarItem(item) {
+    return {
+        CARRO: item?.CARRO ?? "—",
+        MOTORISTA: item?.MOTORISTA ?? "—",
+        ROTA: item?.ROTA ?? "—",
+        SAIDA: item?.SAIDA ?? "—",
+        CHEGADA: item?.CHEGADA ?? "—",
+        DESTINO: item?.DESTINO ?? "—"
     };
-
-    preencherTabela(tbodyAtivos, ativos, true);
-    preencherTabela(tbodyProximos, proximos);
-    preencherTabela(tbodyFinalizados, finalizados);
-    preencherTabela(tbodyFuturas, futuras);
-
-    restaurarEstadoChecks();
-}
-
-function toggleOrdenacaoCarro() {
-    carroSortDirecao = carroSortDirecao === 'asc' ? 'desc' : 'asc';
-    ordenacaoPorCarro = true;
-    atualizarIconeOrdenacao();
-    processarDados(dadosCache);
 }
 
 /* ==============================================
@@ -368,7 +309,11 @@ function toggleOrdenacaoCarro() {
 ============================================== */
 function atualizarRelogio() {
     const agora = new Date();
-    document.getElementById("relogio").textContent = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    document.getElementById("relogio").textContent = agora.toLocaleTimeString("pt-BR", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+    });
 }
 setInterval(atualizarRelogio, 1000);
 atualizarRelogio();
@@ -377,96 +322,277 @@ atualizarRelogio();
    CONVERSÃO E FORMATAÇÃO DE HORAS
 ============================================== */
 function horaParaMinutos(horaStr) {
-    if (!horaStr || horaStr === "—") return 999999; // valor alto para não classificar
-    if (typeof horaStr === "number") return horaStr;
+    if (!horaStr || horaStr === "—" || String(horaStr).trim() === "") return null;
 
-    if (horaStr.includes("T")) {
-        const data = new Date(horaStr);
-        return data.getUTCHours() * 60 + data.getUTCMinutes();
+    const valor = String(horaStr).trim();
+
+    // Formato HH:MM
+    if (/^\d{1,2}:\d{2}$/.test(valor)) {
+        const [h, m] = valor.split(":").map(Number);
+        if (!isNaN(h) && !isNaN(m)) return h * 60 + m;
     }
 
-    const partes = String(horaStr).substring(0,5).split(":").map(Number);
-    if (partes.length !== 2 || isNaN(partes[0]) || isNaN(partes[1])) return 999999;
-    return partes[0] * 60 + partes[1];
+    // Formato de data/hora ISO
+    if (valor.includes("T")) {
+        const data = new Date(valor);
+        if (!isNaN(data.getTime())) {
+            return data.getHours() * 60 + data.getMinutes();
+        }
+    }
+
+    return null;
 }
 
 function formatarHora(horaStr) {
-    if (!horaStr || horaStr === "—") return "—";
-    if (horaStr.includes("T")) {
-        const data = new Date(horaStr);
-        const h = String(data.getUTCHours()).padStart(2, "0");
-        const m = String(data.getUTCMinutes()).padStart(2, "0");
-        return `${h}:${m}`;
+    if (!horaStr || horaStr === "—" || String(horaStr).trim() === "") return "—";
+
+    const valor = String(horaStr).trim();
+
+    if (/^\d{1,2}:\d{2}$/.test(valor)) {
+        const [h, m] = valor.split(":").map(Number);
+        return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
     }
-    return String(horaStr).substring(0,5);
+
+    if (valor.includes("T")) {
+        const data = new Date(valor);
+        if (!isNaN(data.getTime())) {
+            const h = String(data.getHours()).padStart(2, "0");
+            const m = String(data.getMinutes()).padStart(2, "0");
+            return `${h}:${m}`;
+        }
+    }
+
+    return "—";
 }
 
 /* ==============================================
-   CONTROLE DOS CHECKBOXES
+   CHECKBOXES
 ============================================== */
-function salvarEstadoChecks() {
-    checkedState.clear();
-    document.querySelectorAll('#ativos input[type="checkbox"]').forEach(cb => {
+function salvarEstado(containerId, stateMap) {
+    stateMap.clear();
+
+    document.querySelectorAll(`#${containerId} input[type="checkbox"]`).forEach(cb => {
         if (cb.checked) {
-            const carro = cb.closest('tr').cells[0].textContent.trim();
-            checkedState.set(carro, true);
+            stateMap.set(cb.dataset.key, true);
         }
     });
 }
 
-function restaurarEstadoChecks() {
-    document.querySelectorAll('#ativos input[type="checkbox"]').forEach(cb => {
-        const carro = cb.closest('tr').cells[0].textContent.trim();
-        cb.checked = checkedState.has(carro);
+function restaurarEstado(containerId, stateMap) {
+    document.querySelectorAll(`#${containerId} input[type="checkbox"]`).forEach(cb => {
+        cb.checked = stateMap.has(cb.dataset.key);
     });
 }
 
+function atualizarSelectAll(containerId, selectAllId) {
+    const checkboxes = document.querySelectorAll(`#${containerId} input[type="checkbox"]`);
+    const selectAll = document.getElementById(selectAllId);
+
+    if (!checkboxes.length) {
+        selectAll.checked = false;
+        selectAll.indeterminate = false;
+        return;
+    }
+
+    const marcados = [...checkboxes].filter(cb => cb.checked).length;
+
+    selectAll.checked = marcados === checkboxes.length;
+    selectAll.indeterminate = marcados > 0 && marcados < checkboxes.length;
+}
+
+function selecionarTodos(containerId, selectAllId, stateMap) {
+    const marcar = document.getElementById(selectAllId).checked;
+
+    document.querySelectorAll(`#${containerId} input[type="checkbox"]`).forEach(cb => {
+        cb.checked = marcar;
+        if (marcar) {
+            stateMap.set(cb.dataset.key, true);
+        } else {
+            stateMap.delete(cb.dataset.key);
+        }
+    });
+
+    atualizarSelectAll(containerId, selectAllId);
+}
+
 function selecionarTodosAtivos() {
-    const marcar = document.getElementById("selectAllAtivos").checked;
-    document.querySelectorAll('#ativos input[type="checkbox"]').forEach(cb => cb.checked = marcar);
+    selecionarTodos("ativos", "selectAllAtivos", checkedStateAtivos);
+}
+
+function selecionarTodosProximos() {
+    selecionarTodos("proximos", "selectAllProximos", checkedStateProximos);
 }
 
 /* ==============================================
-   CRIAR LINHA DA TABELA
+   RENDERIZAÇÃO
 ============================================== */
-function criarLinha(item, temCheckbox = false) {
+function criarLinha(item, tipo = "") {
+    const chave = gerarChave(item);
+
+    const checkbox = (tipo === "ativos" || tipo === "proximos")
+        ? `<input type="checkbox" data-key="${escapeHtml(chave)}">`
+        : "";
+
     return `
         <tr>
-            <td>${item.CARRO || "—"}</td>
-            <td>${item.MOTORISTA || "—"}</td>
-            <td>${item.ROTA || "—"}</td>
-            <td>${formatarHora(item.SAIDA)}</td>
-            <td>${formatarHora(item.CHEGADA)}</td>
-            <td>${item.DESTINO || "—"}</td>
-            <td>${temCheckbox ? '<input type="checkbox">' : ""}</td>
+            <td>${escapeHtml(item.CARRO)}</td>
+            <td>${escapeHtml(item.MOTORISTA)}</td>
+            <td>${escapeHtml(item.ROTA)}</td>
+            <td>${escapeHtml(formatarHora(item.SAIDA))}</td>
+            <td>${escapeHtml(formatarHora(item.CHEGADA))}</td>
+            <td>${escapeHtml(item.DESTINO)}</td>
+            <td>${checkbox}</td>
         </tr>
     `;
 }
 
+function renderTabela(id, lista, tipo = "") {
+    const tbody = document.getElementById(id);
+
+    if (!lista.length) {
+        tbody.innerHTML = `<tr><td colspan="7" class="vazio">Nenhuma viagem nesta categoria</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = lista.map(item => criarLinha(item, tipo)).join("");
+}
+
+function exibirMensagemCarregando() {
+    const mensagem = `<tr><td colspan="7" class="vazio">Carregando dados...</td></tr>`;
+    document.getElementById("ativos").innerHTML = mensagem;
+    document.getElementById("proximos").innerHTML = mensagem;
+    document.getElementById("finalizados").innerHTML = mensagem;
+    document.getElementById("futuras").innerHTML = mensagem;
+}
+
 /* ==============================================
-   CARREGAR E PROCESSAR DADOS
+   CLASSIFICAÇÃO DAS VIAGENS
+============================================== */
+function classificarViagens(dados) {
+    const agora = new Date();
+    const agoraMinutos = agora.getHours() * 60 + agora.getMinutes();
+
+    const ativos = [];
+    const proximos = [];
+    const finalizados = [];
+    const futuras = [];
+
+    dados.forEach(itemOriginal => {
+        const item = normalizarItem(itemOriginal);
+        const minSaida = horaParaMinutos(item.SAIDA);
+        const minChegada = horaParaMinutos(item.CHEGADA);
+
+        if (minSaida === null) {
+            futuras.push({ ...item, minSaida: 999999 });
+            return;
+        }
+
+        const chegadaValida = minChegada !== null ? minChegada : (23 * 60 + 59);
+        const limiteFinalizado = chegadaValida + TEMPO_EXIBIR_FINALIZADOS;
+
+        if (agoraMinutos >= minSaida && agoraMinutos <= chegadaValida) {
+            ativos.push({ ...item, minSaida });
+        } else if (agoraMinutos > chegadaValida && agoraMinutos <= limiteFinalizado) {
+            finalizados.push({ ...item, minSaida });
+        } else if (minSaida > agoraMinutos && minSaida <= agoraMinutos + JANELA_PROXIMOS) {
+            proximos.push({ ...item, minSaida });
+        } else {
+            futuras.push({ ...item, minSaida });
+        }
+    });
+
+    const ordenar = (a, b) => a.minSaida - b.minSaida;
+
+    ativos.sort(ordenar);
+    proximos.sort(ordenar);
+    finalizados.sort(ordenar);
+    futuras.sort(ordenar);
+
+    return { ativos, proximos, finalizados, futuras };
+}
+
+/* ==============================================
+   CARREGAR DADOS
 ============================================== */
 async function carregarDados() {
-    try {
-        salvarEstadoChecks();
-        const resposta = await fetch(API, { cache: "no-store" });
-        if (!resposta.ok) throw new Error(`Erro na requisição: ${resposta.status}`);
+    if (carregando) return;
+    carregando = true;
 
-        dadosCache = await resposta.json();
-        processarDados(dadosCache);
+    try {
+        salvarEstado("ativos", checkedStateAtivos);
+        salvarEstado("proximos", checkedStateProximos);
+
+        const resposta = await fetch(API, { cache: "no-store" });
+        if (!resposta.ok) {
+            throw new Error(`Erro HTTP: ${resposta.status}`);
+        }
+
+        const dados = await resposta.json();
+
+        if (!Array.isArray(dados)) {
+            throw new Error("A API não retornou uma lista válida.");
+        }
+
+        const { ativos, proximos, finalizados, futuras } = classificarViagens(dados);
+
+        renderTabela("ativos", ativos, "ativos");
+        renderTabela("proximos", proximos, "proximos");
+        renderTabela("finalizados", finalizados);
+        renderTabela("futuras", futuras);
+
+        restaurarEstado("ativos", checkedStateAtivos);
+        restaurarEstado("proximos", checkedStateProximos);
+
+        atualizarSelectAll("ativos", "selectAllAtivos");
+        atualizarSelectAll("proximos", "selectAllProximos");
 
     } catch (erro) {
         console.error("Erro ao carregar dados:", erro);
-        const mensagem = `<tr><td colspan="7" class="erro">Não foi possível carregar os dados. Verifique a conexão.</td></tr>`;
+
+        const mensagem = `<tr><td colspan="7" class="erro">Não foi possível carregar os dados</td></tr>`;
         document.getElementById("ativos").innerHTML = mensagem;
         document.getElementById("proximos").innerHTML = mensagem;
         document.getElementById("finalizados").innerHTML = mensagem;
         document.getElementById("futuras").innerHTML = mensagem;
+
+        document.getElementById("selectAllAtivos").checked = false;
+        document.getElementById("selectAllAtivos").indeterminate = false;
+        document.getElementById("selectAllProximos").checked = false;
+        document.getElementById("selectAllProximos").indeterminate = false;
+    } finally {
+        carregando = false;
     }
 }
 
 /* ==============================================
-   TEMA CLARO/ESCURO
+   EVENTOS DOS CHECKBOXES
+============================================== */
+document.getElementById("ativos").addEventListener("change", (e) => {
+    if (e.target.matches('input[type="checkbox"]')) {
+        const key = e.target.dataset.key;
+        if (e.target.checked) {
+            checkedStateAtivos.set(key, true);
+        } else {
+            checkedStateAtivos.delete(key);
+        }
+        atualizarSelectAll("ativos", "selectAllAtivos");
+    }
+});
+
+document.getElementById("proximos").addEventListener("change", (e) => {
+    if (e.target.matches('input[type="checkbox"]')) {
+        const key = e.target.dataset.key;
+        if (e.target.checked) {
+            checkedStateProximos.set(key, true);
+        } else {
+            checkedStateProximos.delete(key);
+        }
+        atualizarSelectAll("proximos", "selectAllProximos");
+    }
+});
+
+/* ==============================================
+   TEMA
 ============================================== */
 function trocarTema() {
     document.body.classList.toggle("light");
@@ -480,6 +606,7 @@ if (localStorage.getItem("tema") === "true") {
 /* ==============================================
    INICIALIZAÇÃO
 ============================================== */
+exibirMensagemCarregando();
 carregarDados();
 setInterval(carregarDados, 10000);
 </script>
