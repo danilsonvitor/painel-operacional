@@ -101,6 +101,16 @@ table {
     min-width: 1150px;
 }
 
+.th-sortable {
+    cursor: pointer;
+    user-select: none;
+}
+
+.sort-icon-futuras {
+    margin-left: 8px;
+    font-size: 0.85em;
+}
+
 thead {
     background: var(--header);
 }
@@ -245,12 +255,14 @@ button:hover {
     <table>
         <thead>
             <tr>
-                <th>CARROS</th>
-                <th>MOTORISTAS</th>
-                <th>ROTAS</th>
-                <th>SAÍDA</th>
-                <th>CHEGADA</th>
-                <th>DESTINO</th>
+                <!-- INÍCIO: Alteração - colunas ordenáveis com triângulos (apenas em VIAGENS FUTURAS) -->
+                <th class="th-sortable" onclick="toggleOrdenacaoFuturas('CARRO')">CARROS <span class="sort-icon-futuras" data-col="CARRO">▼</span></th>
+                <th class="th-sortable" onclick="toggleOrdenacaoFuturas('MOTORISTA')">MOTORISTAS <span class="sort-icon-futuras" data-col="MOTORISTA"></span></th>
+                <th class="th-sortable" onclick="toggleOrdenacaoFuturas('ROTA')">ROTAS <span class="sort-icon-futuras" data-col="ROTA"></span></th>
+                <th class="th-sortable" onclick="toggleOrdenacaoFuturas('SAIDA')">SAÍDA <span class="sort-icon-futuras" data-col="SAIDA"></span></th>
+                <th class="th-sortable" onclick="toggleOrdenacaoFuturas('CHEGADA')">CHEGADA <span class="sort-icon-futuras" data-col="CHEGADA"></span></th>
+                <th class="th-sortable" onclick="toggleOrdenacaoFuturas('DESTINO')">DESTINO <span class="sort-icon-futuras" data-col="DESTINO"></span></th>
+                <!-- FIM: Alteração - colunas ordenáveis com triângulos -->
                 <th></th>
             </tr>
         </thead>
@@ -482,22 +494,21 @@ function classificarViagens(dados) {
         const minSaida = horaParaMinutos(item.SAIDA);
         const minChegada = horaParaMinutos(item.CHEGADA);
 
-        if (minSaida === null) {
-            futuras.push({ ...item, minSaida: 999999 });
-            return;
-        }
+        // Quando minSaida for inválido, colocamos valores altos para deixar no fim
+        const ms = minSaida === null ? 999999 : minSaida;
+        const mc = minChegada === null ? 999999 : minChegada;
 
-        const chegadaValida = minChegada !== null ? minChegada : (23 * 60 + 59);
+        const chegadaValida = mc !== null ? mc : (23 * 60 + 59);
         const limiteFinalizado = chegadaValida + TEMPO_EXIBIR_FINALIZADOS;
 
-        if (agoraMinutos >= minSaida && agoraMinutos <= chegadaValida) {
-            ativos.push({ ...item, minSaida });
-        } else if (agoraMinutos > chegadaValida && agoraMinutos <= limiteFinalizado) {
-            finalizados.push({ ...item, minSaida });
-        } else if (minSaida > agoraMinutos && minSaida <= agoraMinutos + JANELA_PROXIMOS) {
-            proximos.push({ ...item, minSaida });
+        if (minSaida !== null && agoraMinutos >= minSaida && agoraMinutos <= chegadaValida) {
+            ativos.push({ ...item, minSaida: ms, minChegada: mc });
+        } else if (minSaida !== null && agoraMinutos > chegadaValida && agoraMinutos <= limiteFinalizado) {
+            finalizados.push({ ...item, minSaida: ms, minChegada: mc });
+        } else if (minSaida !== null && minSaida > agoraMinutos && minSaida <= agoraMinutos + JANELA_PROXIMOS) {
+            proximos.push({ ...item, minSaida: ms, minChegada: mc });
         } else {
-            futuras.push({ ...item, minSaida });
+            futuras.push({ ...item, minSaida: ms, minChegada: mc });
         }
     });
 
@@ -510,6 +521,53 @@ function classificarViagens(dados) {
 
     return { ativos, proximos, finalizados, futuras };
 }
+
+/* INÍCIO: Implementação - ordenação exclusiva e genérica para a tabela 'VIAGENS FUTURAS' */
+let sortColumnFuturas = null; // valores possíveis: 'CARRO','MOTORISTA','ROTA','SAIDA','CHEGADA','DESTINO'
+let sortDirectionFuturas = 'asc'; // 'asc' ou 'desc'
+
+function compararFuturas(a, b) {
+    if (!sortColumnFuturas) return 0;
+
+    if (sortColumnFuturas === 'SAIDA') {
+        const va = a.minSaida ?? 999999;
+        const vb = b.minSaida ?? 999999;
+        return (va - vb) * (sortDirectionFuturas === 'asc' ? 1 : -1);
+    }
+
+    if (sortColumnFuturas === 'CHEGADA') {
+        const va = a.minChegada ?? 999999;
+        const vb = b.minChegada ?? 999999;
+        return (va - vb) * (sortDirectionFuturas === 'asc' ? 1 : -1);
+    }
+
+    const va = String(a[sortColumnFuturas] || '').normalize('NFD');
+    const vb = String(b[sortColumnFuturas] || '').normalize('NFD');
+    const res = va.localeCompare(vb, 'pt-BR', { sensitivity: 'base' });
+    return sortDirectionFuturas === 'asc' ? res : -res;
+}
+
+function toggleOrdenacaoFuturas(col) {
+    // alterna direção se clicar na mesma coluna, caso contrário configura nova coluna (asc)
+    if (sortColumnFuturas === col) {
+        sortDirectionFuturas = sortDirectionFuturas === 'asc' ? 'desc' : 'asc';
+    } else {
+        sortColumnFuturas = col;
+        sortDirectionFuturas = 'asc';
+    }
+
+    // Atualiza ícones nas colunas (mostra triângulo apenas na coluna ativa)
+    document.querySelectorAll('.sort-icon-futuras').forEach(span => {
+        const sc = span.dataset.col;
+        if (sc === sortColumnFuturas) span.textContent = sortDirectionFuturas === 'asc' ? '▼' : '▲';
+        else span.textContent = '';
+    });
+
+    // Reaplica carregamento/ordenacão
+    carregarDados();
+}
+
+/* FIM: Implementação - ordenação exclusiva e genérica para a tabela 'VIAGENS FUTURAS' */
 
 /* ==============================================
    CARREGAR DADOS
@@ -534,6 +592,11 @@ async function carregarDados() {
         }
 
         const { ativos, proximos, finalizados, futuras } = classificarViagens(dados);
+
+        // Se uma ordenação por coluna para 'VIAGENS FUTURAS' estiver ativa, aplique-a aqui
+        if (sortColumnFuturas) {
+            futuras.sort(compararFuturas);
+        }
 
         renderTabela("ativos", ativos, "ativos");
         renderTabela("proximos", proximos, "proximos");
