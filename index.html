@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DISPLAY</title>
+<style>
+:root {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #ffffff;
+    --header: #334155;
+    --border: #475569;
+    --hover: rgba(255,255,255,0.05);
+}
+
+.light {
+    --bg: #f1f5f9;
+    --card: #ffffff;
+    --text: #0f172a;
+    --header: #cbd5e1;
+    --border: #94a3b8;
+    --hover: rgba(0,0,0,0.05);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    padding: 20px;
+    transition: background 0.3s, color 0.3s;
+}
+
+.topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+h1 {
+    font-size: 34px;
+    text-align: center;
+    flex: 1;
+    min-width: 250px;
+}
+
+#relogio {
+    font-size: 38px;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 4px;
+    background: rgba(0,0,0,0.4);
+    padding: 8px 18px;
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    white-space: nowrap;
+}
+
+.container {
+    background: var(--card);
+    border-radius: 15px;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    margin-bottom: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.titulo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.titulo span {
+    font-size: 32px;
+}
+
+.ativo-titulo { background: #166534 !important; }
+.proximo-titulo { background: #ca8a04 !important; color: #000000 !important; }
+.finalizado-titulo { background: #991b1b !important; }
+.futuro-titulo { background: #1e40af !important; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    min-width: 1150px;
+}
+
+.th-sortable {
+    cursor: pointer;
+    user-select: none;
+}
+
+.sort-icon {
+    margin-left: 8px;
+    font-size: 0.85em;
+}
+
+thead {
+    background: var(--header);
+}
+
+th, td {
+    padding: 14px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+tbody tr:hover {
+    background: var(--hover);
+}
+
+/* Larguras das colunas */
+th:nth-child(1), td:nth-child(1) { width: 14%; }
+th:nth-child(2), td:nth-child(2) { width: 22%; }
+th:nth-child(3), td:nth-child(3) { width: 18%; }
+th:nth-child(4), td:nth-child(4) { width: 12%; }
+th:nth-child(5), td:nth-child(5) { width: 12%; }
+th:nth-child(6), td:nth-child(6) { width: 18%; }
+th:nth-child(7), td:nth-child(7) { width: 4%; text-align: center; }
+
+.check-all {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    background: var(--header);
+    color: var(--text);
+    transition: background 0.2s;
+}
+
+button:hover {
+    filter: brightness(1.1);
+}
+
+.erro {
+    padding: 20px;
+    text-align: center;
+    color: #ef4444;
+    font-weight: bold;
+}
+
+.vazio {
+    padding: 20px;
+    text-align: center;
+    color: #94a3b8;
+    font-style: italic;
+}
+</style>
+</head>
+
+<body>
+<div class="topo">
+    <div id="relogio"></div>
+    <h1>PAINEL OPERACIONAL</h1>
+    <button onclick="trocarTema()">🌙 / ☀️ Tema</button>
+</div>
+
+<!-- EM OPERAÇÃO -->
+<div class="container">
+    <h2 class="titulo ativo-titulo">
+        <span>🚌</span> EM OPERAÇÃO
+    </h2>
+    <table>
+        <thead>
+            <tr>
+                <th class="th-sortable" onclick="toggleOrdenacaoCarro()">CARRO <span class="sort-icon">▼</span></th>
+                <th>MOTORISTA</th>
+                <th>ROTA</th>
+                <th>SAÍDA</th>
+                <th>CHEGADA</th>
+                <th>DESTINO</th>
+                <th>
+                    <input type="checkbox" id="selectAllAtivos" class="check-all" onclick="selecionarTodosAtivos()">
+                </th>
+            </tr>
+        </thead>
+        <tbody id="ativos"></tbody>
+    </table>
+</div>
+
+<!-- PRÓXIMOS -->
+<div class="container">
+    <h2 class="titulo proximo-titulo">
+        <span>⏳</span> PRÓXIMOS (30 MIN)
+    </h2>
+    <table>
+        <thead>
+            <tr>
+                <th class="th-sortable" onclick="toggleOrdenacaoCarro()">CARRO <span class="sort-icon">▼</span></th>
+                <th>MOTORISTA</th>
+                <th>ROTA</th>
+                <th>SAÍDA</th>
+                <th>CHEGADA</th>
+                <th>DESTINO</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="proximos"></tbody>
+    </table>
+</div>
+
+<!-- FINALIZADOS -->
+<div class="container">
+    <h2 class="titulo finalizado-titulo">
+        <span>🏁</span> FINALIZADOS
+    </h2>
+    <table>
+        <thead>
+            <tr>
+                <th class="th-sortable" onclick="toggleOrdenacaoCarro()">CARRO <span class="sort-icon">▼</span></th>
+                <th>MOTORISTA</th>
+                <th>ROTA</th>
+                <th>SAÍDA</th>
+                <th>CHEGADA</th>
+                <th>DESTINO</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="finalizados"></tbody>
+    </table>
+</div>
+
+<!-- VIAGENS FUTURAS -->
+<div class="container">
+    <h2 class="titulo futuro-titulo">
+        <span>📅</span> VIAGENS FUTURAS
+    </h2>
+    <table>
+        <thead>
+            <tr>
+                <th class="th-sortable" onclick="toggleOrdenacaoCarro()">CARRO <span class="sort-icon">▼</span></th>
+                <th>MOTORISTA</th>
+                <th>ROTA</th>
+                <th>SAÍDA</th>
+                <th>CHEGADA</th>
+                <th>DESTINO</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="futuras"></tbody>
+    </table>
+</div>
+
+<script>
+/* ==============================================
+   CONFIGURAÇÕES E API
+============================================== */
+const API = "https://script.google.com/macros/s/AKfycbyt-QoodC39Oc0Ig8lRcfpriBUmqoAkkLiyOZxtTpnSQiL9QycksUzAe40xl0JUQyrgwQ/exec";
+const TEMPO_EXIBIR_FINALIZADOS = 120; // minutos
+const JANELA_PROXIMOS = 30; // minutos
+let checkedState = new Map();
+let dadosCache = [];
+let carroSortDirecao = 'asc';
+let ordenacaoPorCarro = false;
+
+function atualizarIconeOrdenacao() {
+    document.querySelectorAll('.sort-icon').forEach(span => {
+        span.textContent = carroSortDirecao === 'asc' ? '▼' : '▲';
+    });
+}
+
+function compararPorCarro(a, b) {
+    const carroA = String(a.CARRO || '').normalize('NFD');
+    const carroB = String(b.CARRO || '').normalize('NFD');
+    const resultado = carroA.localeCompare(carroB, 'pt-BR', { sensitivity: 'base' });
+    return carroSortDirecao === 'asc' ? resultado : -resultado;
+}
+
+function compararPorSaida(a, b) {
+    return (a.minSaida || 0) - (b.minSaida || 0);
+}
+
+function processarDados(dados) {
+    const tbodyAtivos = document.getElementById("ativos");
+    const tbodyProximos = document.getElementById("proximos");
+    const tbodyFinalizados = document.getElementById("finalizados");
+    const tbodyFuturas = document.getElementById("futuras");
+
+    tbodyAtivos.innerHTML = "";
+    tbodyProximos.innerHTML = "";
+    tbodyFinalizados.innerHTML = "";
+    tbodyFuturas.innerHTML = "";
+
+    const agora = new Date();
+    const agoraMinutos = agora.getHours() * 60 + agora.getMinutes();
+
+    const ativos = [];
+    const proximos = [];
+    const finalizados = [];
+    const futuras = [];
+
+    dados.forEach(item => {
+        const minSaida = horaParaMinutos(item.SAIDA);
+        const minChegada = horaParaMinutos(item.CHEGADA);
+        const limiteFinalizado = minChegada + TEMPO_EXIBIR_FINALIZADOS;
+
+        if (agoraMinutos >= minSaida && agoraMinutos <= minChegada) {
+            ativos.push({ ...item, minSaida });
+        } else if (agoraMinutos > minChegada && agoraMinutos <= limiteFinalizado) {
+            finalizados.push({ ...item, minSaida });
+        } else if (minSaida > agoraMinutos && minSaida <= agoraMinutos + JANELA_PROXIMOS) {
+            proximos.push({ ...item, minSaida });
+        } else if (minSaida > agoraMinutos) {
+            futuras.push({ ...item, minSaida });
+        }
+    });
+
+    if (ordenacaoPorCarro) {
+        ativos.sort(compararPorCarro);
+        proximos.sort(compararPorCarro);
+        finalizados.sort(compararPorCarro);
+        futuras.sort(compararPorCarro);
+    } else {
+        ativos.sort(compararPorSaida);
+        proximos.sort(compararPorSaida);
+        finalizados.sort(compararPorSaida);
+        futuras.sort(compararPorSaida);
+    }
+
+    const preencherTabela = (tbody, itens, temCheckbox = false) => {
+        const html = itens.map(item => criarLinha(item, temCheckbox)).join('');
+        tbody.innerHTML = html || `<tr><td colspan="7" class="vazio">Nenhuma viagem nesta categoria</td></tr>`;
+    };
+
+    preencherTabela(tbodyAtivos, ativos, true);
+    preencherTabela(tbodyProximos, proximos);
+    preencherTabela(tbodyFinalizados, finalizados);
+    preencherTabela(tbodyFuturas, futuras);
+
+    restaurarEstadoChecks();
+}
+
+function toggleOrdenacaoCarro() {
+    carroSortDirecao = carroSortDirecao === 'asc' ? 'desc' : 'asc';
+    ordenacaoPorCarro = true;
+    atualizarIconeOrdenacao();
+    processarDados(dadosCache);
+}
+
+/* ==============================================
+   RELÓGIO
+============================================== */
+function atualizarRelogio() {
+    const agora = new Date();
+    document.getElementById("relogio").textContent = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+setInterval(atualizarRelogio, 1000);
+atualizarRelogio();
+
+/* ==============================================
+   CONVERSÃO E FORMATAÇÃO DE HORAS
+============================================== */
+function horaParaMinutos(horaStr) {
+    if (!horaStr || horaStr === "—") return 999999; // valor alto para não classificar
+    if (typeof horaStr === "number") return horaStr;
+
+    if (horaStr.includes("T")) {
+        const data = new Date(horaStr);
+        return data.getUTCHours() * 60 + data.getUTCMinutes();
+    }
+
+    const partes = String(horaStr).substring(0,5).split(":").map(Number);
+    if (partes.length !== 2 || isNaN(partes[0]) || isNaN(partes[1])) return 999999;
+    return partes[0] * 60 + partes[1];
+}
+
+function formatarHora(horaStr) {
+    if (!horaStr || horaStr === "—") return "—";
+    if (horaStr.includes("T")) {
+        const data = new Date(horaStr);
+        const h = String(data.getUTCHours()).padStart(2, "0");
+        const m = String(data.getUTCMinutes()).padStart(2, "0");
+        return `${h}:${m}`;
+    }
+    return String(horaStr).substring(0,5);
+}
+
+/* ==============================================
+   CONTROLE DOS CHECKBOXES
+============================================== */
+function salvarEstadoChecks() {
+    checkedState.clear();
+    document.querySelectorAll('#ativos input[type="checkbox"]').forEach(cb => {
+        if (cb.checked) {
+            const carro = cb.closest('tr').cells[0].textContent.trim();
+            checkedState.set(carro, true);
+        }
+    });
+}
+
+function restaurarEstadoChecks() {
+    document.querySelectorAll('#ativos input[type="checkbox"]').forEach(cb => {
+        const carro = cb.closest('tr').cells[0].textContent.trim();
+        cb.checked = checkedState.has(carro);
+    });
+}
+
+function selecionarTodosAtivos() {
+    const marcar = document.getElementById("selectAllAtivos").checked;
+    document.querySelectorAll('#ativos input[type="checkbox"]').forEach(cb => cb.checked = marcar);
+}
+
+/* ==============================================
+   CRIAR LINHA DA TABELA
+============================================== */
+function criarLinha(item, temCheckbox = false) {
+    return `
+        <tr>
+            <td>${item.CARRO || "—"}</td>
+            <td>${item.MOTORISTA || "—"}</td>
+            <td>${item.ROTA || "—"}</td>
+            <td>${formatarHora(item.SAIDA)}</td>
+            <td>${formatarHora(item.CHEGADA)}</td>
+            <td>${item.DESTINO || "—"}</td>
+            <td>${temCheckbox ? '<input type="checkbox">' : ""}</td>
+        </tr>
+    `;
+}
+
+/* ==============================================
+   CARREGAR E PROCESSAR DADOS
+============================================== */
+async function carregarDados() {
+    try {
+        salvarEstadoChecks();
+        const resposta = await fetch(API, { cache: "no-store" });
+        if (!resposta.ok) throw new Error(`Erro na requisição: ${resposta.status}`);
+
+        dadosCache = await resposta.json();
+        processarDados(dadosCache);
+
+    } catch (erro) {
+        console.error("Erro ao carregar dados:", erro);
+        const mensagem = `<tr><td colspan="7" class="erro">Não foi possível carregar os dados. Verifique a conexão.</td></tr>`;
+        document.getElementById("ativos").innerHTML = mensagem;
+        document.getElementById("proximos").innerHTML = mensagem;
+        document.getElementById("finalizados").innerHTML = mensagem;
+        document.getElementById("futuras").innerHTML = mensagem;
+    }
+}
+
+/* ==============================================
+   TEMA CLARO/ESCURO
+============================================== */
+function trocarTema() {
+    document.body.classList.toggle("light");
+    localStorage.setItem("tema", document.body.classList.contains("light"));
+}
+
+if (localStorage.getItem("tema") === "true") {
+    document.body.classList.add("light");
+}
+
+/* ==============================================
+   INICIALIZAÇÃO
+============================================== */
+carregarDados();
+setInterval(carregarDados, 10000);
+</script>
+</body>
+</html>
