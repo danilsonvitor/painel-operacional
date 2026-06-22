@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DISPLAY</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
     --bg: #0f172a;
@@ -97,8 +98,8 @@ h1 {
 table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed;
-    min-width: 1150px;
+    table-layout: auto;
+    min-width: 1280px;
 }
 
 .th-sortable {
@@ -128,13 +129,53 @@ tbody tr:hover {
     background: var(--hover);
 }
 
-th:nth-child(1), td:nth-child(1) { width: 14%; }
-th:nth-child(2), td:nth-child(2) { width: 22%; }
-th:nth-child(3), td:nth-child(3) { width: 18%; }
-th:nth-child(4), td:nth-child(4) { width: 12%; }
-th:nth-child(5), td:nth-child(5) { width: 12%; }
-th:nth-child(6), td:nth-child(6) { width: 18%; }
-th:nth-child(7), td:nth-child(7) { width: 4%; text-align: center; }
+th:nth-child(1), td:nth-child(1) { min-width: 200px; width: 18%; }
+th:nth-child(2), td:nth-child(2) { min-width: 180px; width: 15%; }
+th:nth-child(3), td:nth-child(3) { min-width: 160px; width: 13%; }
+th:nth-child(4), td:nth-child(4) { min-width: 160px; width: 13%; }
+th:nth-child(5), td:nth-child(5) { min-width: 140px; width: 12%; }
+th:nth-child(6), td:nth-child(6) { min-width: 120px; width: 10%; }
+th:nth-child(7), td:nth-child(7) { min-width: 120px; width: 10%; }
+th:nth-child(8), td:nth-child(8) { min-width: 100px; width: 8%; }
+th:nth-child(9), td:nth-child(9) { min-width: 90px; width: 6%; }
+th:nth-child(10), td:nth-child(10) { min-width: 60px; width: 3%; text-align: center; }
+
+.logo-icon {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    border-radius: 4px;
+    display: block;
+    margin: 0 auto;
+}
+
+.rota-placa {
+    display: inline-block;
+    background: #ffffff;
+    color: #111827;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 0.95em;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    border: 1px solid #d1d5db;
+    white-space: nowrap;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.rota-placa:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.18);
+}
+
+.hora-digital {
+    font-family: 'Orbitron', 'Courier New', monospace;
+    font-weight: 700;
+    color: #7efc00; /* verde digital */
+    font-size: 1.05em;
+    letter-spacing: 1px;
+    text-shadow: 0 0 6px rgba(126,252,0,0.18);
+}
 
 .check-all {
     width: 20px;
@@ -190,10 +231,13 @@ button:hover {
             <tr>
                 <th>CARROS</th>
                 <th>MOTORISTAS</th>
+                <th>TELEFONE</th>
                 <th>ROTAS</th>
+                <th>PARTIDA</th>
                 <th>SAÍDA</th>
                 <th>CHEGADA</th>
                 <th>DESTINO</th>
+                <th>LOGO</th>
                 <th>
                     <input type="checkbox" id="selectAllAtivos" class="check-all" onclick="selecionarTodosAtivos()">
                 </th>
@@ -213,10 +257,13 @@ button:hover {
             <tr>
                 <th>CARROS</th>
                 <th>MOTORISTAS</th>
+                <th>TELEFONE</th>
                 <th>ROTAS</th>
+                <th>PARTIDA</th>
                 <th>SAÍDA</th>
                 <th>CHEGADA</th>
                 <th>DESTINO</th>
+                <th>LOGO</th>
                 <th>
                     <input type="checkbox" id="selectAllProximos" class="check-all" onclick="selecionarTodosProximos()">
                 </th>
@@ -236,10 +283,13 @@ button:hover {
             <tr>
                 <th>CARROS</th>
                 <th>MOTORISTAS</th>
+                <th>TELEFONE</th>
                 <th>ROTAS</th>
+                <th>PARTIDA</th>
                 <th>SAÍDA</th>
                 <th>CHEGADA</th>
                 <th>DESTINO</th>
+                <th>LOGO</th>
                 <th></th>
             </tr>
         </thead>
@@ -258,10 +308,13 @@ button:hover {
                 <!-- INÍCIO: Alteração - colunas ordenáveis com triângulos (apenas em VIAGENS FUTURAS) -->
                 <th class="th-sortable" onclick="toggleOrdenacaoFuturas('CARRO')">CARROS <span class="sort-icon-futuras" data-col="CARRO">▼</span></th>
                 <th class="th-sortable" onclick="toggleOrdenacaoFuturas('MOTORISTA')">MOTORISTAS <span class="sort-icon-futuras" data-col="MOTORISTA"></span></th>
+                <th class="th-sortable" onclick="toggleOrdenacaoFuturas('TEL')">TELEFONE <span class="sort-icon-futuras" data-col="TEL"></span></th>
                 <th class="th-sortable" onclick="toggleOrdenacaoFuturas('ROTA')">ROTAS <span class="sort-icon-futuras" data-col="ROTA"></span></th>
+                <th class="th-sortable" onclick="toggleOrdenacaoFuturas('BAIRRO_ROTA')">PARTIDA <span class="sort-icon-futuras" data-col="BAIRRO_ROTA"></span></th>
                 <th class="th-sortable" onclick="toggleOrdenacaoFuturas('SAIDA')">SAÍDA <span class="sort-icon-futuras" data-col="SAIDA"></span></th>
                 <th class="th-sortable" onclick="toggleOrdenacaoFuturas('CHEGADA')">CHEGADA <span class="sort-icon-futuras" data-col="CHEGADA"></span></th>
                 <th class="th-sortable" onclick="toggleOrdenacaoFuturas('DESTINO')">DESTINO <span class="sort-icon-futuras" data-col="DESTINO"></span></th>
+                <th>LOGO</th>
                 <!-- FIM: Alteração - colunas ordenáveis com triângulos -->
                 <th></th>
             </tr>
@@ -298,10 +351,13 @@ function gerarChave(item) {
     return [
         item.CARRO || "",
         item.MOTORISTA || "",
+        item.TEL || "",
         item.ROTA || "",
+        item.BAIRRO_ROTA || "",
         item.SAIDA || "",
         item.CHEGADA || "",
-        item.DESTINO || ""
+        item.DESTINO || "",
+        item.LOGO || ""
     ].join("|");
 }
 
@@ -309,10 +365,13 @@ function normalizarItem(item) {
     return {
         CARRO: item?.CARRO ?? "—",
         MOTORISTA: item?.MOTORISTA ?? "—",
+        TEL: item?.TEL ?? "—",
         ROTA: item?.ROTA ?? "—",
+        BAIRRO_ROTA: item?.BAIRRO_ROTA ?? "—",
         SAIDA: item?.SAIDA ?? "—",
         CHEGADA: item?.CHEGADA ?? "—",
-        DESTINO: item?.DESTINO ?? "—"
+        DESTINO: item?.DESTINO ?? "—",
+        LOGO: item?.LOGO ?? "—"
     };
 }
 
@@ -445,14 +504,21 @@ function criarLinha(item, tipo = "") {
         ? `<input type="checkbox" data-key="${escapeHtml(chave)}">`
         : "";
 
+    const logoHtml = item.LOGO && item.LOGO !== "—"
+        ? `<img class="logo-icon" src="${escapeHtml(item.LOGO)}" alt="Logo" loading="lazy">`
+        : "—";
+
     return `
         <tr>
             <td>${escapeHtml(item.CARRO)}</td>
             <td>${escapeHtml(item.MOTORISTA)}</td>
-            <td>${escapeHtml(item.ROTA)}</td>
-            <td>${escapeHtml(formatarHora(item.SAIDA))}</td>
-            <td>${escapeHtml(formatarHora(item.CHEGADA))}</td>
+            <td>${escapeHtml(item.TEL)}</td>
+            <td><span class="rota-placa">${escapeHtml(item.ROTA)}</span></td>
+            <td>${escapeHtml(item.BAIRRO_ROTA)}</td>
+            <td><span class="hora-digital">${escapeHtml(formatarHora(item.SAIDA))}</span></td>
+            <td><span class="hora-digital">${escapeHtml(formatarHora(item.CHEGADA))}</span></td>
             <td>${escapeHtml(item.DESTINO)}</td>
+            <td>${logoHtml}</td>
             <td>${checkbox}</td>
         </tr>
     `;
@@ -462,7 +528,8 @@ function renderTabela(id, lista, tipo = "") {
     const tbody = document.getElementById(id);
 
     if (!lista.length) {
-        tbody.innerHTML = `<tr><td colspan="7" class="vazio">Nenhuma viagem nesta categoria</td></tr>`;
+        const colspan = tipo === "ativos" || tipo === "proximos" ? 10 : 9;
+        tbody.innerHTML = `<tr><td colspan="${colspan}" class="vazio">Nenhuma viagem nesta categoria</td></tr>`;
         return;
     }
 
@@ -470,11 +537,12 @@ function renderTabela(id, lista, tipo = "") {
 }
 
 function exibirMensagemCarregando() {
-    const mensagem = `<tr><td colspan="7" class="vazio">Carregando dados...</td></tr>`;
-    document.getElementById("ativos").innerHTML = mensagem;
-    document.getElementById("proximos").innerHTML = mensagem;
-    document.getElementById("finalizados").innerHTML = mensagem;
-    document.getElementById("futuras").innerHTML = mensagem;
+    const mensagemAtivos = `<tr><td colspan="10" class="vazio">Carregando dados...</td></tr>`;
+    const mensagemOutros = `<tr><td colspan="9" class="vazio">Carregando dados...</td></tr>`;
+    document.getElementById("ativos").innerHTML = mensagemAtivos;
+    document.getElementById("proximos").innerHTML = mensagemAtivos;
+    document.getElementById("finalizados").innerHTML = mensagemOutros;
+    document.getElementById("futuras").innerHTML = mensagemOutros;
 }
 
 /* ==============================================
