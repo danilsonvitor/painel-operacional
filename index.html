@@ -374,10 +374,10 @@ function gerarChave(item) {
         item.MOTORISTA || "",
         item.TEL || "",
         item.ROTA || "",
-        item.BAIRRO_ROTA || "",
+        item.BAIRRO_PARTIDA || "",
         item.SAIDA || "",
         item.CHEGADA || "",
-        item.DESTINO || "",
+        item.BAIRRO_DESTINO || "",
         item.LOGO || ""
     ].join("|");
 }
@@ -388,10 +388,10 @@ function normalizarItem(item) {
         MOTORISTA: item?.MOTORISTA ?? "—",
         TEL: item?.TEL ?? "—",
         ROTA: item?.ROTA ?? "—",
-        BAIRRO_ROTA: item?.BAIRRO_ROTA ?? "—",
+        BAIRRO_ROTA: item?.BAIRRO_PARTIDA ?? "—",
         SAIDA: item?.SAIDA ?? "—",
         CHEGADA: item?.CHEGADA ?? "—",
-        DESTINO: item?.DESTINO ?? "—",
+        DESTINO: item?.BAIRRO_DESTINO ?? "—",
         LOGO: item?.LOGO ?? "—"
     };
 }
@@ -538,10 +538,10 @@ function criarLinha(item, tipo = "") {
             <td>${escapeHtml(item.MOTORISTA)}</td>
             <td>${escapeHtml(item.TEL)}</td>
             <td><span class="rota-placa">${escapeHtml(item.ROTA)}</span></td>
-            <td>${escapeHtml(item.BAIRRO_ROTA)}</td>
+            <td>${escapeHtml(item.BAIRRO_PARTIDA)}</td>
             <td><span class="hora-digital">${escapeHtml(formatarHora(item.SAIDA))}</span></td>
             <td><span class="hora-digital">${escapeHtml(formatarHora(item.CHEGADA))}</span></td>
-            <td>${escapeHtml(item.DESTINO)}</td>
+            <td>${escapeHtml(item.BAIRRO_DESTINO)}</td>
             <td>${logoHtml}</td>
             <td>${actionCell}</td>
         </tr>
@@ -705,7 +705,7 @@ function editarLinha(key) {
     edicaoAtiva = true;
 
     const tds = tr.querySelectorAll('td');
-    const fieldMap = {1:'MOTORISTA',2:'TEL',3:'ROTA',4:'BAIRRO_ROTA',5:'SAIDA',6:'CHEGADA',7:'DESTINO'};
+    const fieldMap = {1:'MOTORISTA',2:'TEL',3:'ROTA',4:'BAIRRO_PARTIDA',5:'SAIDA',6:'CHEGADA',7:'BAIRRO_DESTINO'};
 
     Object.keys(fieldMap).forEach(idx => {
         const i = Number(idx);
