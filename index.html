@@ -99,7 +99,7 @@ table {
     width: 100%;
     border-collapse: collapse;
     table-layout: auto;
-    min-width: 1280px;
+    min-width: 1400px; /* ← Aumentado para caber a nova coluna */
 }
 
 .th-sortable {
@@ -129,16 +129,17 @@ tbody tr:hover {
     background: var(--hover);
 }
 
-th:nth-child(1), td:nth-child(1) { min-width: 200px; width: 18%; }
-th:nth-child(2), td:nth-child(2) { min-width: 180px; width: 15%; }
-th:nth-child(3), td:nth-child(3) { min-width: 160px; width: 13%; }
-th:nth-child(4), td:nth-child(4) { min-width: 160px; width: 13%; }
-th:nth-child(5), td:nth-child(5) { min-width: 140px; width: 12%; }
-th:nth-child(6), td:nth-child(6) { min-width: 120px; width: 10%; }
-th:nth-child(7), td:nth-child(7) { min-width: 120px; width: 10%; }
-th:nth-child(8), td:nth-child(8) { min-width: 100px; width: 8%; }
-th:nth-child(9), td:nth-child(9) { min-width: 90px; width: 6%; }
-th:nth-child(10), td:nth-child(10) { min-width: 60px; width: 3%; text-align: center; }
+th:nth-child(1), td:nth-child(1) { min-width: 200px; width: 16%; }
+th:nth-child(2), td:nth-child(2) { min-width: 180px; width: 14%; }
+th:nth-child(3), td:nth-child(3) { min-width: 150px; width: 12%; }
+th:nth-child(4), td:nth-child(4) { min-width: 120px; width: 10%; } /* ← Coluna TURNO */
+th:nth-child(5), td:nth-child(5) { min-width: 150px; width: 12%; }
+th:nth-child(6), td:nth-child(6) { min-width: 130px; width: 10%; }
+th:nth-child(7), td:nth-child(7) { min-width: 120px; width: 9%; }
+th:nth-child(8), td:nth-child(8) { min-width: 120px; width: 9%; }
+th:nth-child(9), td:nth-child(9) { min-width: 100px; width: 6%; }
+th:nth-child(10), td:nth-child(10) { min-width: 90px; width: 5%; }
+th:nth-child(11), td:nth-child(11) { min-width: 60px; width: 3%; text-align: center; }
 
 .logo-icon {
     width: 32px;
@@ -171,7 +172,7 @@ th:nth-child(10), td:nth-child(10) { min-width: 60px; width: 3%; text-align: cen
 .hora-digital {
     font-family: 'Orbitron', 'Courier New', monospace;
     font-weight: 700;
-    color: #7efc00; /* verde digital */
+    color: #7efc00;
     font-size: 1.05em;
     letter-spacing: 1px;
     text-shadow: 0 0 6px rgba(126,252,0,0.18);
@@ -249,9 +250,10 @@ button:hover {
     <table>
         <thead>
             <tr>
-                <th>CARRO</th>
+                <th>CARROS</th>
                 <th>MOTORISTAS</th>
                 <th>TELEFONE</th>
+                <th>TURNO</th> <!-- ← NOVA COLUNA -->
                 <th>ROTAS</th>
                 <th>PARTIDA</th>
                 <th>SAÍDA</th>
@@ -278,6 +280,7 @@ button:hover {
                 <th>CARROS</th>
                 <th>MOTORISTAS</th>
                 <th>TELEFONE</th>
+                <th>TURNO</th> <!-- ← NOVA COLUNA -->
                 <th>ROTAS</th>
                 <th>PARTIDA</th>
                 <th>SAÍDA</th>
@@ -304,6 +307,7 @@ button:hover {
                 <th>CARROS</th>
                 <th>MOTORISTAS</th>
                 <th>TELEFONE</th>
+                <th>TURNO</th> <!-- ← NOVA COLUNA -->
                 <th>ROTAS</th>
                 <th>PARTIDA</th>
                 <th>SAÍDA</th>
@@ -328,11 +332,12 @@ button:hover {
                 <th class="th-sortable" onclick="toggleOrdenacaoFuturas('CARRO')">CARROS <span class="sort-icon-futuras" data-col="CARRO">▼</span></th>
                 <th class="th-sortable" onclick="toggleOrdenacaoFuturas('MOTORISTA')">MOTORISTAS <span class="sort-icon-futuras" data-col="MOTORISTA"></span></th>
                 <th class="th-sortable" onclick="toggleOrdenacaoFuturas('TEL')">TELEFONE <span class="sort-icon-futuras" data-col="TEL"></span></th>
+                <th class="th-sortable" onclick="toggleOrdenacaoFuturas('TURNO')">TURNO <span class="sort-icon-futuras" data-col="TURNO"></span></th> <!-- ← NOVA COLUNA -->
                 <th class="th-sortable" onclick="toggleOrdenacaoFuturas('ROTA')">ROTAS <span class="sort-icon-futuras" data-col="ROTA"></span></th>
-                <th class="th-sortable" onclick="toggleOrdenacaoFuturas('BAIRRO_PARTIDA')">PARTIDA <span class="sort-icon-futuras" data-col="BAIRRO_PARTIDA"></span></th> <!-- ← CORREÇÃO -->
+                <th class="th-sortable" onclick="toggleOrdenacaoFuturas('BAIRRO_PARTIDA')">PARTIDA <span class="sort-icon-futuras" data-col="BAIRRO_PARTIDA"></span></th>
                 <th class="th-sortable" onclick="toggleOrdenacaoFuturas('SAIDA')">SAÍDA <span class="sort-icon-futuras" data-col="SAIDA"></span></th>
                 <th class="th-sortable" onclick="toggleOrdenacaoFuturas('CHEGADA')">CHEGADA <span class="sort-icon-futuras" data-col="CHEGADA"></span></th>
-                <th class="th-sortable" onclick="toggleOrdenacaoFuturas('BAIRRO_DESTINO')">DESTINO <span class="sort-icon-futuras" data-col="BAIRRO_DESTINO"></span></th> <!-- ← CORREÇÃO -->
+                <th class="th-sortable" onclick="toggleOrdenacaoFuturas('BAIRRO_DESTINO')">DESTINO <span class="sort-icon-futuras" data-col="BAIRRO_DESTINO"></span></th>
                 <th>LOGO</th>
                 <th></th>
             </tr>
@@ -346,8 +351,8 @@ button:hover {
    CONFIGURAÇÕES E API
 ============================================== */
 const API = "https://script.google.com/macros/s/AKfycbyt-QoodC39Oc0Ig8lRcfpriBUmqoAkkLiyOZxtTpnSQiL9QycksUzAe40xl0JUQyrgwQ/exec";
-const TEMPO_EXIBIR_FINALIZADOS = 120; // minutos
-const JANELA_PROXIMOS = 30; // minutos
+const TEMPO_EXIBIR_FINALIZADOS = 120;
+const JANELA_PROXIMOS = 30;
 
 let checkedStateAtivos = new Map();
 let checkedStateProximos = new Map();
@@ -371,11 +376,12 @@ function gerarChave(item) {
         item.CARRO || "",
         item.MOTORISTA || "",
         item.TEL || "",
+        item.TURNO || "", // ← Adicionado na chave única
         item.ROTA || "",
-        item.BAIRRO_PARTIDA || "", // ← CORREÇÃO
+        item.BAIRRO_PARTIDA || "",
         item.SAIDA || "",
         item.CHEGADA || "",
-        item.BAIRRO_DESTINO || "", // ← CORREÇÃO
+        item.BAIRRO_DESTINO || "",
         item.LOGO || ""
     ].join("|");
 }
@@ -385,11 +391,12 @@ function normalizarItem(item) {
         CARRO: item?.CARRO ?? "—",
         MOTORISTA: item?.MOTORISTA ?? "—",
         TEL: item?.TEL ?? "—",
+        TURNO: item?.TURNO ?? "—", // ← Novo campo incluído
         ROTA: item?.ROTA ?? "—",
-        BAIRRO_PARTIDA: item?.BAIRRO_PARTIDA ?? "—", // ← CORREÇÃO: mantém nome original
+        BAIRRO_PARTIDA: item?.BAIRRO_PARTIDA ?? "—",
         SAIDA: item?.SAIDA ?? "—",
         CHEGADA: item?.CHEGADA ?? "—",
-        BAIRRO_DESTINO: item?.BAIRRO_DESTINO ?? "—", // ← CORREÇÃO: mantém nome original
+        BAIRRO_DESTINO: item?.BAIRRO_DESTINO ?? "—",
         LOGO: item?.LOGO ?? "—"
     };
 }
@@ -458,11 +465,8 @@ function formatarHora(horaStr) {
 ============================================== */
 function salvarEstado(containerId, stateMap) {
     stateMap.clear();
-
     document.querySelectorAll(`#${containerId} input[type="checkbox"]`).forEach(cb => {
-        if (cb.checked) {
-            stateMap.set(cb.dataset.key, true);
-        }
+        if (cb.checked) stateMap.set(cb.dataset.key, true);
     });
 }
 
@@ -475,31 +479,22 @@ function restaurarEstado(containerId, stateMap) {
 function atualizarSelectAll(containerId, selectAllId) {
     const checkboxes = document.querySelectorAll(`#${containerId} input[type="checkbox"]`);
     const selectAll = document.getElementById(selectAllId);
-
     if (!checkboxes.length) {
         selectAll.checked = false;
         selectAll.indeterminate = false;
         return;
     }
-
     const marcados = [...checkboxes].filter(cb => cb.checked).length;
-
     selectAll.checked = marcados === checkboxes.length;
     selectAll.indeterminate = marcados > 0 && marcados < checkboxes.length;
 }
 
 function selecionarTodos(containerId, selectAllId, stateMap) {
     const marcar = document.getElementById(selectAllId).checked;
-
     document.querySelectorAll(`#${containerId} input[type="checkbox"]`).forEach(cb => {
         cb.checked = marcar;
-        if (marcar) {
-            stateMap.set(cb.dataset.key, true);
-        } else {
-            stateMap.delete(cb.dataset.key);
-        }
+        marcar ? stateMap.set(cb.dataset.key, true) : stateMap.delete(cb.dataset.key);
     });
-
     atualizarSelectAll(containerId, selectAllId);
 }
 
@@ -516,7 +511,6 @@ function selecionarTodosProximos() {
 ============================================== */
 function criarLinha(item, tipo = "") {
     const chave = gerarChave(item);
-
     let actionCell = "";
     if (tipo === "ativos" || tipo === "proximos") {
         actionCell = `<input type="checkbox" data-key="${escapeHtml(chave)}">`;
@@ -533,11 +527,12 @@ function criarLinha(item, tipo = "") {
             <td>${escapeHtml(item.CARRO)}</td>
             <td>${escapeHtml(item.MOTORISTA)}</td>
             <td>${escapeHtml(item.TEL)}</td>
+            <td>${escapeHtml(item.TURNO)}</td> <!-- ← Exibe o TURNO -->
             <td><span class="rota-placa">${escapeHtml(item.ROTA)}</span></td>
-            <td>${escapeHtml(item.BAIRRO_PARTIDA)}</td> <!-- ← CORREÇÃO -->
+            <td>${escapeHtml(item.BAIRRO_PARTIDA)}</td>
             <td><span class="hora-digital">${escapeHtml(formatarHora(item.SAIDA))}</span></td>
             <td><span class="hora-digital">${escapeHtml(formatarHora(item.CHEGADA))}</span></td>
-            <td>${escapeHtml(item.BAIRRO_DESTINO)}</td> <!-- ← CORREÇÃO -->
+            <td>${escapeHtml(item.BAIRRO_DESTINO)}</td>
             <td>${logoHtml}</td>
             <td>${actionCell}</td>
         </tr>
@@ -546,19 +541,17 @@ function criarLinha(item, tipo = "") {
 
 function renderTabela(id, lista, tipo = "") {
     const tbody = document.getElementById(id);
-
     if (!lista.length) {
-        const colspan = tipo === "ativos" || tipo === "proximos" ? 10 : 9;
+        const colspan = tipo === "ativos" || tipo === "proximos" ? 11 : 10;
         tbody.innerHTML = `<tr><td colspan="${colspan}" class="vazio">Nenhuma viagem nesta categoria</td></tr>`;
         return;
     }
-
     tbody.innerHTML = lista.map(item => criarLinha(item, tipo)).join("");
 }
 
 function exibirMensagemCarregando() {
-    const mensagemAtivos = `<tr><td colspan="10" class="vazio">Carregando dados...</td></tr>`;
-    const mensagemOutros = `<tr><td colspan="9" class="vazio">Carregando dados...</td></tr>`;
+    const mensagemAtivos = `<tr><td colspan="11" class="vazio">Carregando dados...</td></tr>`;
+    const mensagemOutros = `<tr><td colspan="10" class="vazio">Carregando dados...</td></tr>`;
     document.getElementById("ativos").innerHTML = mensagemAtivos;
     document.getElementById("proximos").innerHTML = mensagemAtivos;
     document.getElementById("finalizados").innerHTML = mensagemOutros;
@@ -571,7 +564,6 @@ function exibirMensagemCarregando() {
 function classificarViagens(dados) {
     const agora = new Date();
     const agoraMinutos = agora.getHours() * 60 + agora.getMinutes();
-
     const ativos = [];
     const proximos = [];
     const finalizados = [];
@@ -581,10 +573,8 @@ function classificarViagens(dados) {
         const item = normalizarItem(itemOriginal);
         const minSaida = horaParaMinutos(item.SAIDA);
         const minChegada = horaParaMinutos(item.CHEGADA);
-
         const ms = minSaida === null ? 999999 : minSaida;
         const mc = minChegada === null ? 999999 : minChegada;
-
         const chegadaValida = mc !== null ? mc : (23 * 60 + 59);
         const limiteFinalizado = chegadaValida + TEMPO_EXIBIR_FINALIZADOS;
 
@@ -600,7 +590,6 @@ function classificarViagens(dados) {
     });
 
     const ordenar = (a, b) => a.minSaida - b.minSaida;
-
     ativos.sort(ordenar);
     proximos.sort(ordenar);
     finalizados.sort(ordenar);
@@ -614,19 +603,16 @@ let sortDirectionFuturas = 'asc';
 
 function compararFuturas(a, b) {
     if (!sortColumnFuturas) return 0;
-
     if (sortColumnFuturas === 'SAIDA') {
         const va = a.minSaida ?? 999999;
         const vb = b.minSaida ?? 999999;
         return (va - vb) * (sortDirectionFuturas === 'asc' ? 1 : -1);
     }
-
     if (sortColumnFuturas === 'CHEGADA') {
         const va = a.minChegada ?? 999999;
         const vb = b.minChegada ?? 999999;
         return (va - vb) * (sortDirectionFuturas === 'asc' ? 1 : -1);
     }
-
     const va = String(a[sortColumnFuturas] || '').normalize('NFD');
     const vb = String(b[sortColumnFuturas] || '').normalize('NFD');
     const res = va.localeCompare(vb, 'pt-BR', { sensitivity: 'base' });
@@ -640,13 +626,10 @@ function toggleOrdenacaoFuturas(col) {
         sortColumnFuturas = col;
         sortDirectionFuturas = 'asc';
     }
-
     document.querySelectorAll('.sort-icon-futuras').forEach(span => {
         const sc = span.dataset.col;
-        if (sc === sortColumnFuturas) span.textContent = sortDirectionFuturas === 'asc' ? '▼' : '▲';
-        else span.textContent = '';
+        span.textContent = sc === sortColumnFuturas ? (sortDirectionFuturas === 'asc' ? '▼' : '▲') : '';
     });
-
     carregarDados();
 }
 
@@ -659,27 +642,19 @@ async function enviarAtualizacao(key, updates) {
         payload.append('action', 'update');
         payload.append('key', key);
         payload.append('updates', JSON.stringify(updates));
-
         const resp = await fetch(API, {
             method: 'POST',
             mode: 'cors',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
             body: payload.toString()
         });
-
         const text = await resp.text();
-        let json;
-        try {
-            json = JSON.parse(text);
-        } catch (parseErr) {
-            throw new Error(`Resposta inválida do servidor: ${text}`);
-        }
-
+        const json = JSON.parse(text);
         if (!resp.ok || !json.success) throw new Error(json.message || 'Erro ao atualizar');
         return json;
     } catch (err) {
         console.error('Falha em enviar atualização:', err);
-        throw new Error(err.message || 'Failed to fetch');
+        throw new Error(err.message || 'Falha na conexão');
     }
 }
 
@@ -690,28 +665,25 @@ function encontrarLinhaPorChave(key) {
 function editarLinha(key) {
     const tr = encontrarLinhaPorChave(key);
     if (!tr) return alert('Linha não encontrada');
-
     edicaoAtiva = true;
-
     const tds = tr.querySelectorAll('td');
     const fieldMap = {
         1: 'MOTORISTA',
         2: 'TEL',
-        3: 'ROTA',
-        4: 'BAIRRO_PARTIDA', // ← CORREÇÃO
-        5: 'SAIDA',
-        6: 'CHEGADA',
-        7: 'BAIRRO_DESTINO' // ← CORREÇÃO
+        3: 'TURNO', // ← Adicionado na edição
+        4: 'ROTA',
+        5: 'BAIRRO_PARTIDA',
+        6: 'SAIDA',
+        7: 'CHEGADA',
+        8: 'BAIRRO_DESTINO'
     };
-
     Object.keys(fieldMap).forEach(idx => {
         const i = Number(idx);
         const field = fieldMap[idx];
         const val = tds[i].textContent.trim();
         tds[i].innerHTML = `<input class="input-edit" data-field="${field}" value="${val.replace(/"/g,'&quot;')}">`;
     });
-
-    tds[9].innerHTML = `<button class="btn-save" onclick="salvarLinha('${key}')">Salvar</button><button class="btn-cancel" onclick="cancelarEdicao('${key}')">Cancelar</button>`;
+    tds[10].innerHTML = `<button class="btn-save" onclick="salvarLinha('${key}')">Salvar</button><button class="btn-cancel" onclick="cancelarEdicao('${key}')">Cancelar</button>`;
 }
 
 async function salvarLinha(key) {
@@ -720,7 +692,6 @@ async function salvarLinha(key) {
     const inputs = tr.querySelectorAll('.input-edit');
     const updates = {};
     inputs.forEach(inp => updates[inp.dataset.field] = inp.value);
-
     try {
         await enviarAtualizacao(key, updates);
         edicaoAtiva = false;
@@ -741,55 +712,34 @@ function cancelarEdicao(key) {
    CARREGAR DADOS
 ============================================== */
 async function carregarDados() {
-    if (edicaoAtiva) return;
-    if (carregando) return;
+    if (edicaoAtiva || carregando) return;
     carregando = true;
-
     try {
         salvarEstado("ativos", checkedStateAtivos);
         salvarEstado("proximos", checkedStateProximos);
-
         const resposta = await fetch(API, { cache: "no-store" });
-        if (!resposta.ok) {
-            throw new Error(`Erro HTTP: ${resposta.status}`);
-        }
-
+        if (!resposta.ok) throw new Error(`Erro HTTP: ${resposta.status}`);
         const dados = await resposta.json();
-
-        if (!Array.isArray(dados)) {
-            throw new Error("A API não retornou uma lista válida.");
-        }
-
+        if (!Array.isArray(dados)) throw new Error("Resposta inválida da API");
         const { ativos, proximos, finalizados, futuras } = classificarViagens(dados);
-
-        if (sortColumnFuturas) {
-            futuras.sort(compararFuturas);
-        }
-
+        if (sortColumnFuturas) futuras.sort(compararFuturas);
         renderTabela("ativos", ativos, "ativos");
         renderTabela("proximos", proximos, "proximos");
         renderTabela("finalizados", finalizados);
         renderTabela("futuras", futuras, "futuras");
-
         restaurarEstado("ativos", checkedStateAtivos);
         restaurarEstado("proximos", checkedStateProximos);
-
         atualizarSelectAll("ativos", "selectAllAtivos");
         atualizarSelectAll("proximos", "selectAllProximos");
-
     } catch (erro) {
         console.error("Erro ao carregar dados:", erro);
-
-        const mensagem = `<tr><td colspan="9" class="erro">Não foi possível carregar os dados</td></tr>`;
+        const mensagem = `<tr><td colspan="10" class="erro">Não foi possível carregar os dados</td></tr>`;
         document.getElementById("ativos").innerHTML = mensagem;
         document.getElementById("proximos").innerHTML = mensagem;
         document.getElementById("finalizados").innerHTML = mensagem;
         document.getElementById("futuras").innerHTML = mensagem;
-
         document.getElementById("selectAllAtivos").checked = false;
-        document.getElementById("selectAllAtivos").indeterminate = false;
         document.getElementById("selectAllProximos").checked = false;
-        document.getElementById("selectAllProximos").indeterminate = false;
     } finally {
         carregando = false;
     }
@@ -798,11 +748,7 @@ async function carregarDados() {
 document.getElementById("ativos").addEventListener("change", (e) => {
     if (e.target.matches('input[type="checkbox"]')) {
         const key = e.target.dataset.key;
-        if (e.target.checked) {
-            checkedStateAtivos.set(key, true);
-        } else {
-            checkedStateAtivos.delete(key);
-        }
+        e.target.checked ? checkedStateAtivos.set(key, true) : checkedStateAtivos.delete(key);
         atualizarSelectAll("ativos", "selectAllAtivos");
     }
 });
@@ -810,18 +756,11 @@ document.getElementById("ativos").addEventListener("change", (e) => {
 document.getElementById("proximos").addEventListener("change", (e) => {
     if (e.target.matches('input[type="checkbox"]')) {
         const key = e.target.dataset.key;
-        if (e.target.checked) {
-            checkedStateProximos.set(key, true);
-        } else {
-            checkedStateProximos.delete(key);
-        }
+        e.target.checked ? checkedStateProximos.set(key, true) : checkedStateProximos.delete(key);
         atualizarSelectAll("proximos", "selectAllProximos");
     }
 });
 
-/* ==============================================
-   TEMA
-============================================== */
 function trocarTema() {
     document.body.classList.toggle("light");
     localStorage.setItem("tema", document.body.classList.contains("light"));
@@ -831,9 +770,6 @@ if (localStorage.getItem("tema") === "true") {
     document.body.classList.add("light");
 }
 
-/* ==============================================
-   INICIALIZAÇÃO
-============================================== */
 exibirMensagemCarregando();
 carregarDados();
 setInterval(carregarDados, 10000);
