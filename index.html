@@ -249,7 +249,7 @@ button:hover {
     <table>
         <thead>
             <tr>
-                <th>CARROS</th>
+                <th>CARRO</th>
                 <th>MOTORISTAS</th>
                 <th>TELEFONE</th>
                 <th>ROTAS</th>
@@ -325,17 +325,15 @@ button:hover {
     <table>
         <thead>
             <tr>
-                <!-- INÍCIO: Alteração - colunas ordenáveis com triângulos (apenas em VIAGENS FUTURAS) -->
                 <th class="th-sortable" onclick="toggleOrdenacaoFuturas('CARRO')">CARROS <span class="sort-icon-futuras" data-col="CARRO">▼</span></th>
                 <th class="th-sortable" onclick="toggleOrdenacaoFuturas('MOTORISTA')">MOTORISTAS <span class="sort-icon-futuras" data-col="MOTORISTA"></span></th>
                 <th class="th-sortable" onclick="toggleOrdenacaoFuturas('TEL')">TELEFONE <span class="sort-icon-futuras" data-col="TEL"></span></th>
                 <th class="th-sortable" onclick="toggleOrdenacaoFuturas('ROTA')">ROTAS <span class="sort-icon-futuras" data-col="ROTA"></span></th>
-                <th class="th-sortable" onclick="toggleOrdenacaoFuturas('BAIRRO_ROTA')">PARTIDA <span class="sort-icon-futuras" data-col="BAIRRO_PARTIDA"></span></th>
+                <th class="th-sortable" onclick="toggleOrdenacaoFuturas('BAIRRO_PARTIDA')">PARTIDA <span class="sort-icon-futuras" data-col="BAIRRO_PARTIDA"></span></th> <!-- ← CORREÇÃO -->
                 <th class="th-sortable" onclick="toggleOrdenacaoFuturas('SAIDA')">SAÍDA <span class="sort-icon-futuras" data-col="SAIDA"></span></th>
                 <th class="th-sortable" onclick="toggleOrdenacaoFuturas('CHEGADA')">CHEGADA <span class="sort-icon-futuras" data-col="CHEGADA"></span></th>
-                <th class="th-sortable" onclick="toggleOrdenacaoFuturas('DESTINO')">DESTINO <span class="sort-icon-futuras" data-col="BAIRRO_DESTINO"></span></th>
+                <th class="th-sortable" onclick="toggleOrdenacaoFuturas('BAIRRO_DESTINO')">DESTINO <span class="sort-icon-futuras" data-col="BAIRRO_DESTINO"></span></th> <!-- ← CORREÇÃO -->
                 <th>LOGO</th>
-                <!-- FIM: Alteração - colunas ordenáveis com triângulos -->
                 <th></th>
             </tr>
         </thead>
@@ -354,7 +352,7 @@ const JANELA_PROXIMOS = 30; // minutos
 let checkedStateAtivos = new Map();
 let checkedStateProximos = new Map();
 let carregando = false;
-let edicaoAtiva = false; // quando true, evita auto-recarregar os dados
+let edicaoAtiva = false;
 
 /* ==============================================
    UTILITÁRIOS
@@ -374,10 +372,10 @@ function gerarChave(item) {
         item.MOTORISTA || "",
         item.TEL || "",
         item.ROTA || "",
-        item.BAIRRO_PARTIDA || "",
+        item.BAIRRO_PARTIDA || "", // ← CORREÇÃO
         item.SAIDA || "",
         item.CHEGADA || "",
-        item.BAIRRO_DESTINO || "",
+        item.BAIRRO_DESTINO || "", // ← CORREÇÃO
         item.LOGO || ""
     ].join("|");
 }
@@ -388,10 +386,10 @@ function normalizarItem(item) {
         MOTORISTA: item?.MOTORISTA ?? "—",
         TEL: item?.TEL ?? "—",
         ROTA: item?.ROTA ?? "—",
-        BAIRRO_ROTA: item?.BAIRRO_PARTIDA ?? "—",
+        BAIRRO_PARTIDA: item?.BAIRRO_PARTIDA ?? "—", // ← CORREÇÃO: mantém nome original
         SAIDA: item?.SAIDA ?? "—",
         CHEGADA: item?.CHEGADA ?? "—",
-        DESTINO: item?.BAIRRO_DESTINO ?? "—",
+        BAIRRO_DESTINO: item?.BAIRRO_DESTINO ?? "—", // ← CORREÇÃO: mantém nome original
         LOGO: item?.LOGO ?? "—"
     };
 }
@@ -418,13 +416,11 @@ function horaParaMinutos(horaStr) {
 
     const valor = String(horaStr).trim();
 
-    // Formato HH:MM
     if (/^\d{1,2}:\d{2}$/.test(valor)) {
         const [h, m] = valor.split(":").map(Number);
         if (!isNaN(h) && !isNaN(m)) return h * 60 + m;
     }
 
-    // Formato de data/hora ISO
     if (valor.includes("T")) {
         const data = new Date(valor);
         if (!isNaN(data.getTime())) {
@@ -538,10 +534,10 @@ function criarLinha(item, tipo = "") {
             <td>${escapeHtml(item.MOTORISTA)}</td>
             <td>${escapeHtml(item.TEL)}</td>
             <td><span class="rota-placa">${escapeHtml(item.ROTA)}</span></td>
-            <td>${escapeHtml(item.BAIRRO_PARTIDA)}</td>
+            <td>${escapeHtml(item.BAIRRO_PARTIDA)}</td> <!-- ← CORREÇÃO -->
             <td><span class="hora-digital">${escapeHtml(formatarHora(item.SAIDA))}</span></td>
             <td><span class="hora-digital">${escapeHtml(formatarHora(item.CHEGADA))}</span></td>
-            <td>${escapeHtml(item.BAIRRO_DESTINO)}</td>
+            <td>${escapeHtml(item.BAIRRO_DESTINO)}</td> <!-- ← CORREÇÃO -->
             <td>${logoHtml}</td>
             <td>${actionCell}</td>
         </tr>
@@ -586,7 +582,6 @@ function classificarViagens(dados) {
         const minSaida = horaParaMinutos(item.SAIDA);
         const minChegada = horaParaMinutos(item.CHEGADA);
 
-        // Quando minSaida for inválido, colocamos valores altos para deixar no fim
         const ms = minSaida === null ? 999999 : minSaida;
         const mc = minChegada === null ? 999999 : minChegada;
 
@@ -614,9 +609,8 @@ function classificarViagens(dados) {
     return { ativos, proximos, finalizados, futuras };
 }
 
-/* INÍCIO: Implementação - ordenação exclusiva e genérica para a tabela 'VIAGENS FUTURAS' */
-let sortColumnFuturas = null; // valores possíveis: 'CARRO','MOTORISTA','ROTA','SAIDA','CHEGADA','DESTINO'
-let sortDirectionFuturas = 'asc'; // 'asc' ou 'desc'
+let sortColumnFuturas = null;
+let sortDirectionFuturas = 'asc';
 
 function compararFuturas(a, b) {
     if (!sortColumnFuturas) return 0;
@@ -640,7 +634,6 @@ function compararFuturas(a, b) {
 }
 
 function toggleOrdenacaoFuturas(col) {
-    // alterna direção se clicar na mesma coluna, caso contrário configura nova coluna (asc)
     if (sortColumnFuturas === col) {
         sortDirectionFuturas = sortDirectionFuturas === 'asc' ? 'desc' : 'asc';
     } else {
@@ -648,21 +641,17 @@ function toggleOrdenacaoFuturas(col) {
         sortDirectionFuturas = 'asc';
     }
 
-    // Atualiza ícones nas colunas (mostra triângulo apenas na coluna ativa)
     document.querySelectorAll('.sort-icon-futuras').forEach(span => {
         const sc = span.dataset.col;
         if (sc === sortColumnFuturas) span.textContent = sortDirectionFuturas === 'asc' ? '▼' : '▲';
         else span.textContent = '';
     });
 
-    // Reaplica carregamento/ordenacão
     carregarDados();
 }
 
-/* FIM: Implementação - ordenação exclusiva e genérica para a tabela 'VIAGENS FUTURAS' */
-
 /* ==============================================
-   EDIÇÃO INLINE (VIAGENS FUTURAS)
+   EDIÇÃO INLINE
 ============================================== */
 async function enviarAtualizacao(key, updates) {
     try {
@@ -705,7 +694,15 @@ function editarLinha(key) {
     edicaoAtiva = true;
 
     const tds = tr.querySelectorAll('td');
-    const fieldMap = {1:'MOTORISTA',2:'TEL',3:'ROTA',4:'BAIRRO_PARTIDA',5:'SAIDA',6:'CHEGADA',7:'BAIRRO_DESTINO'};
+    const fieldMap = {
+        1: 'MOTORISTA',
+        2: 'TEL',
+        3: 'ROTA',
+        4: 'BAIRRO_PARTIDA', // ← CORREÇÃO
+        5: 'SAIDA',
+        6: 'CHEGADA',
+        7: 'BAIRRO_DESTINO' // ← CORREÇÃO
+    };
 
     Object.keys(fieldMap).forEach(idx => {
         const i = Number(idx);
@@ -714,7 +711,6 @@ function editarLinha(key) {
         tds[i].innerHTML = `<input class="input-edit" data-field="${field}" value="${val.replace(/"/g,'&quot;')}">`;
     });
 
-    // action buttons
     tds[9].innerHTML = `<button class="btn-save" onclick="salvarLinha('${key}')">Salvar</button><button class="btn-cancel" onclick="cancelarEdicao('${key}')">Cancelar</button>`;
 }
 
@@ -741,12 +737,11 @@ function cancelarEdicao(key) {
     carregarDados();
 }
 
-
 /* ==============================================
    CARREGAR DADOS
 ============================================== */
 async function carregarDados() {
-    if (edicaoAtiva) return; // evita recarregar enquanto há edição em andamento
+    if (edicaoAtiva) return;
     if (carregando) return;
     carregando = true;
 
@@ -767,7 +762,6 @@ async function carregarDados() {
 
         const { ativos, proximos, finalizados, futuras } = classificarViagens(dados);
 
-        // Se uma ordenação por coluna para 'VIAGENS FUTURAS' estiver ativa, aplique-a aqui
         if (sortColumnFuturas) {
             futuras.sort(compararFuturas);
         }
@@ -786,7 +780,7 @@ async function carregarDados() {
     } catch (erro) {
         console.error("Erro ao carregar dados:", erro);
 
-        const mensagem = `<tr><td colspan="7" class="erro">Não foi possível carregar os dados</td></tr>`;
+        const mensagem = `<tr><td colspan="9" class="erro">Não foi possível carregar os dados</td></tr>`;
         document.getElementById("ativos").innerHTML = mensagem;
         document.getElementById("proximos").innerHTML = mensagem;
         document.getElementById("finalizados").innerHTML = mensagem;
@@ -801,9 +795,6 @@ async function carregarDados() {
     }
 }
 
-/* ==============================================
-   EVENTOS DOS CHECKBOXES
-============================================== */
 document.getElementById("ativos").addEventListener("change", (e) => {
     if (e.target.matches('input[type="checkbox"]')) {
         const key = e.target.dataset.key;
